@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { Path, logging, virtualFs } from '@angular-devkit/core';
+import { JsonObject, Path, logging, virtualFs } from '@angular-devkit/core';
 import { Observable } from 'rxjs/Observable';
 import { Architect, Target } from './architect';
 export interface BuilderContext {
@@ -19,14 +19,19 @@ export interface BuildEvent {
 export interface Builder<OptionsT> {
     run(_target: Target<Partial<OptionsT>>): Observable<BuildEvent>;
 }
-export interface BuilderMap {
+export interface BuilderPathsMap {
     builders: {
-        [k: string]: BuilderDescription;
+        [k: string]: BuilderPaths;
     };
 }
-export interface BuilderDescription {
+export interface BuilderPaths {
     class: Path;
     schema: Path;
+    description: string;
+}
+export interface BuilderDescription {
+    name: string;
+    schema: JsonObject;
     description: string;
 }
 export interface BuilderConstructor<OptionsT> {

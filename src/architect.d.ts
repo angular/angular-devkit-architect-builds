@@ -27,6 +27,9 @@ export declare class BuilderCannotBeResolvedException extends BaseException {
 export declare class WorkspaceNotYetLoadedException extends BaseException {
     constructor();
 }
+export declare class BuilderNotFoundException extends BaseException {
+    constructor(builder: string);
+}
 export interface Target<OptionsT = {}> {
     root: Path;
     projectType: string;
@@ -42,16 +45,24 @@ export interface TargetOptions<OptionsT = {}> {
 export declare class Architect {
     private _root;
     private _host;
-    private readonly _workspaceSchema;
-    private readonly _buildersSchema;
+    private readonly _workspaceSchemaPath;
+    private readonly _buildersSchemaPath;
+    private _workspaceSchema;
+    private _buildersSchema;
+    private _architectSchemasLoaded;
+    private _builderPathsMap;
+    private _builderDescriptionMap;
+    private _builderConstructorMap;
     private _workspace;
     constructor(_root: Path, _host: virtualFs.Host<{}>);
     loadWorkspaceFromHost(workspacePath: Path): Observable<this>;
     loadWorkspaceFromJson(json: Workspace): Observable<this>;
+    private _loadArchitectSchemas();
     getTarget<OptionsT>(options?: TargetOptions): Target<OptionsT>;
     run<OptionsT>(target: Target<OptionsT>, partialContext?: Partial<BuilderContext>): Observable<BuildEvent>;
     getBuilderDescription<OptionsT>(target: Target<OptionsT>): Observable<BuilderDescription>;
     validateBuilderOptions<OptionsT>(target: Target<OptionsT>, builderDescription: BuilderDescription): Observable<OptionsT>;
     getBuilder<OptionsT>(builderDescription: BuilderDescription, context: BuilderContext): Builder<OptionsT>;
-    private _validateAgainstSchema<T>(contentJson, schemaPath);
+    private _validateAgainstSchema<T>(contentJson, schemaJson);
+    private _loadJsonFile(path);
 }
