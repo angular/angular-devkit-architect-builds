@@ -5,12 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { JsonObject, Path, logging, virtualFs } from '@angular-devkit/core';
+import { JsonObject, Path, experimental, logging, virtualFs } from '@angular-devkit/core';
 import { Observable } from 'rxjs/Observable';
 import { Architect, BuilderConfiguration } from './architect';
 export interface BuilderContext {
     logger: logging.Logger;
     host: virtualFs.Host<{}>;
+    workspace: experimental.workspace.Workspace;
     architect: Architect;
 }
 export interface BuildEvent {
