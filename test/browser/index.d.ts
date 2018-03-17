@@ -6,11 +6,11 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { Observable } from 'rxjs/Observable';
-import { BuildEvent, Builder, Target } from '../../src';
+import { BuildEvent, Builder, BuilderConfiguration } from '../../src';
 export interface BrowserTargetOptions {
     browserOption: number;
-    optimizationLevel: number;
+    optionalBrowserOption: boolean;
 }
 export default class BrowserTarget implements Builder<BrowserTargetOptions> {
-    run(_info: Target<Partial<BrowserTargetOptions>>): Observable<BuildEvent>;
+    run(_browserConfig: BuilderConfiguration<Partial<BrowserTargetOptions>>): Observable<BuildEvent>;
 }

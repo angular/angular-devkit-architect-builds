@@ -7,7 +7,7 @@
  */
 import { JsonObject, Path, logging, virtualFs } from '@angular-devkit/core';
 import { Observable } from 'rxjs/Observable';
-import { Architect, Target } from './architect';
+import { Architect, BuilderConfiguration } from './architect';
 export interface BuilderContext {
     logger: logging.Logger;
     host: virtualFs.Host<{}>;
@@ -17,7 +17,7 @@ export interface BuildEvent {
     success: boolean;
 }
 export interface Builder<OptionsT> {
-    run(_target: Target<Partial<OptionsT>>): Observable<BuildEvent>;
+    run(builderConfig: BuilderConfiguration<Partial<OptionsT>>): Observable<BuildEvent>;
 }
 export interface BuilderPathsMap {
     builders: {
