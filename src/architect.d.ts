@@ -9,7 +9,7 @@ import { BaseException, JsonObject, Path, experimental } from '@angular-devkit/c
 import { Observable } from 'rxjs/Observable';
 import { BuildEvent, Builder, BuilderContext, BuilderDescription } from './builder';
 export declare class TargetNotFoundException extends BaseException {
-    constructor(name?: string);
+    constructor(name: string);
 }
 export declare class ConfigurationNotFoundException extends BaseException {
     constructor(name: string);
