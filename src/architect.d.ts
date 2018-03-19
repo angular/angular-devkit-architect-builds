@@ -8,11 +8,14 @@
 import { BaseException, JsonObject, Path, experimental } from '@angular-devkit/core';
 import { Observable } from 'rxjs/Observable';
 import { BuildEvent, Builder, BuilderContext, BuilderDescription } from './builder';
+export declare class ProjectNotFoundException extends BaseException {
+    constructor(projectName: string);
+}
 export declare class TargetNotFoundException extends BaseException {
-    constructor(name: string);
+    constructor(projectName: string, targetName: string);
 }
 export declare class ConfigurationNotFoundException extends BaseException {
-    constructor(name: string);
+    constructor(projectName: string, configurationName: string);
 }
 export declare class BuilderCannotBeResolvedException extends BaseException {
     constructor(builder: string);
@@ -35,7 +38,7 @@ export interface TargetSpecifier<OptionsT = {}> {
     configuration?: string;
     overrides?: Partial<OptionsT>;
 }
-export interface TargetsMap {
+export interface TargetMap {
     [k: string]: Target;
 }
 export declare type TargetOptions<T = JsonObject> = T;
@@ -54,12 +57,16 @@ export declare class Architect {
     private _targetsSchema;
     private _buildersSchema;
     private _architectSchemasLoaded;
+    private _targetMapMap;
     private _builderPathsMap;
     private _builderDescriptionMap;
     private _builderConstructorMap;
     constructor(_workspace: experimental.workspace.Workspace);
     loadArchitect(): Observable<this>;
-    getBuilderConfiguration<OptionsT>(targetSpec: TargetSpecifier): Observable<BuilderConfiguration<OptionsT>>;
+    listProjectTargets(projectName: string): string[];
+    private _getProjectTargetMap(projectName);
+    private _getProjectTarget<T>(projectName, targetName);
+    getBuilderConfiguration<OptionsT>(targetSpec: TargetSpecifier): BuilderConfiguration<OptionsT>;
     run<OptionsT>(builderConfig: BuilderConfiguration<OptionsT>, partialContext?: Partial<BuilderContext>): Observable<BuildEvent>;
     getBuilderDescription<OptionsT>(builderConfig: BuilderConfiguration<OptionsT>): Observable<BuilderDescription>;
     validateBuilderOptions<OptionsT>(builderConfig: BuilderConfiguration<OptionsT>, builderDescription: BuilderDescription): Observable<BuilderConfiguration<OptionsT>>;
