@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { BaseException, JsonObject, Path, experimental } from '@angular-devkit/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BuildEvent, Builder, BuilderContext, BuilderDescription } from './builder';
 export declare class ProjectNotFoundException extends BaseException {
     constructor(projectName: string);
