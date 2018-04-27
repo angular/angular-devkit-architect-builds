@@ -28,6 +28,7 @@ export declare class BuilderNotFoundException extends BaseException {
 }
 export interface BuilderConfiguration<OptionsT = {}> {
     root: Path;
+    sourceRoot?: Path;
     projectType: string;
     builder: string;
     options: OptionsT;
