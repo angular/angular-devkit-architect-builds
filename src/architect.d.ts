@@ -5,9 +5,8 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { BaseException, JsonObject, Path, experimental } from '@angular-devkit/core';
+import { BaseException, JsonObject, Path, experimental, logging, virtualFs } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
-import { BuildEvent, Builder, BuilderContext, BuilderDescription } from './builder';
 export declare class ProjectNotFoundException extends BaseException {
     constructor(projectName: string);
 }
@@ -25,6 +24,36 @@ export declare class ArchitectNotYetLoadedException extends BaseException {
 }
 export declare class BuilderNotFoundException extends BaseException {
     constructor(builder: string);
+}
+export interface BuilderContext {
+    logger: logging.Logger;
+    host: virtualFs.Host<{}>;
+    workspace: experimental.workspace.Workspace;
+    architect: Architect;
+}
+export interface BuildEvent {
+    success: boolean;
+}
+export interface Builder<OptionsT> {
+    run(builderConfig: BuilderConfiguration<Partial<OptionsT>>): Observable<BuildEvent>;
+}
+export interface BuilderPathsMap {
+    builders: {
+        [k: string]: BuilderPaths;
+    };
+}
+export interface BuilderPaths {
+    class: Path;
+    schema: Path;
+    description: string;
+}
+export interface BuilderDescription {
+    name: string;
+    schema: JsonObject;
+    description: string;
+}
+export interface BuilderConstructor<OptionsT> {
+    new (context: BuilderContext): Builder<OptionsT>;
 }
 export interface BuilderConfiguration<OptionsT = {}> {
     root: Path;
