@@ -9,4 +9,5 @@ import { logging } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
 import { BuildEvent, TargetSpecifier } from '../src';
 import { TestProjectHost } from './test-project-host';
-export declare function runTargetSpec(host: TestProjectHost, targetSpec: TargetSpecifier, overrides?: {}, logger?: logging.Logger): Observable<BuildEvent>;
+export declare const DefaultTimeout = 45000;
+export declare function runTargetSpec(host: TestProjectHost, targetSpec: TargetSpecifier, overrides?: {}, timeout?: number, logger?: logging.Logger): Observable<BuildEvent>;
