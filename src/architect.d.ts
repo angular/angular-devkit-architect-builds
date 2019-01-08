@@ -32,8 +32,9 @@ export interface BuilderContext {
     architect: Architect;
     targetSpecifier?: TargetSpecifier;
 }
-export interface BuildEvent {
+export interface BuildEvent<BuildResultT = any> {
     success: boolean;
+    result?: BuildResultT;
 }
 export interface Builder<OptionsT> {
     run(builderConfig: BuilderConfiguration<Partial<OptionsT>>): Observable<BuildEvent>;
