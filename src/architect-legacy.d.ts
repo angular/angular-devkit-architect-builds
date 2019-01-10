@@ -7,24 +7,45 @@
  */
 import { BaseException, JsonObject, Path, experimental, logging, virtualFs } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
+/**
+ * @deprecated
+ */
 export declare class ProjectNotFoundException extends BaseException {
     constructor(projectName: string);
 }
+/**
+ * @deprecated
+ */
 export declare class TargetNotFoundException extends BaseException {
     constructor(projectName: string, targetName: string);
 }
+/**
+ * @deprecated
+ */
 export declare class ConfigurationNotFoundException extends BaseException {
     constructor(projectName: string, configurationName: string);
 }
+/**
+ * @deprecated
+ */
 export declare class BuilderCannotBeResolvedException extends BaseException {
     constructor(builder: string);
 }
+/**
+ * @deprecated
+ */
 export declare class ArchitectNotYetLoadedException extends BaseException {
     constructor();
 }
+/**
+ * @deprecated
+ */
 export declare class BuilderNotFoundException extends BaseException {
     constructor(builder: string);
 }
+/**
+ * @deprecated
+ */
 export interface BuilderContext {
     logger: logging.Logger;
     host: virtualFs.Host<{}>;
@@ -32,31 +53,53 @@ export interface BuilderContext {
     architect: Architect;
     targetSpecifier?: TargetSpecifier;
 }
+/**
+ * TODO: use unknown
+ * @deprecated
+ */
 export interface BuildEvent<BuildResultT = any> {
     success: boolean;
     result?: BuildResultT;
 }
+/**
+ * @deprecated
+ */
 export interface Builder<OptionsT> {
     run(builderConfig: BuilderConfiguration<Partial<OptionsT>>): Observable<BuildEvent>;
 }
+/**
+ * @deprecated
+ */
 export interface BuilderPathsMap {
     builders: {
         [k: string]: BuilderPaths;
     };
 }
+/**
+ * @deprecated
+ */
 export interface BuilderPaths {
     class: Path;
     schema: Path;
     description: string;
 }
+/**
+ * @deprecated
+ */
 export interface BuilderDescription {
     name: string;
     schema: JsonObject;
     description: string;
 }
+/**
+ * @deprecated
+ */
 export interface BuilderConstructor<OptionsT> {
     new (context: BuilderContext): Builder<OptionsT>;
 }
+/**
+ * @deprecated
+ */
 export interface BuilderConfiguration<OptionsT = {}> {
     root: Path;
     sourceRoot?: Path;
@@ -64,17 +107,26 @@ export interface BuilderConfiguration<OptionsT = {}> {
     builder: string;
     options: OptionsT;
 }
+/**
+ * @deprecated
+ */
 export interface TargetSpecifier<OptionsT = {}> {
     project: string;
     target: string;
     configuration?: string;
     overrides?: Partial<OptionsT>;
 }
+/**
+ * @deprecated
+ */
 export interface TargetMap {
     [k: string]: Target;
 }
 export declare type TargetOptions<T = JsonObject> = T;
 export declare type TargetConfiguration<T = JsonObject> = Partial<T>;
+/**
+ * @deprecated
+ */
 export interface Target<T = JsonObject> {
     builder: string;
     options: TargetOptions<T>;
@@ -82,6 +134,9 @@ export interface Target<T = JsonObject> {
         [k: string]: TargetConfiguration<T>;
     };
 }
+/**
+ * @deprecated
+ */
 export declare class Architect {
     private _workspace;
     private readonly _targetsSchemaPath;

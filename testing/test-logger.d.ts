@@ -6,6 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { logging } from '@angular-devkit/core';
+/**
+ * @deprecated
+ */
 export declare class TestLogger extends logging.Logger {
     private _latestEntries;
     constructor(name: string, parent?: logging.Logger | null);

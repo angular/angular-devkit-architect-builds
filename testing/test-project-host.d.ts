@@ -10,6 +10,9 @@ import { Path, PathFragment, virtualFs } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
 import { Stats } from 'fs';
 import { Observable } from 'rxjs';
+/**
+ * @deprecated
+ */
 export declare class TestProjectHost extends NodeJsSyncHost {
     protected _templateRoot: Path;
     private _currentRoot;

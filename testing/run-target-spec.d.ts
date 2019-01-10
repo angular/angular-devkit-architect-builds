@@ -9,5 +9,11 @@ import { logging } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
 import { BuildEvent, TargetSpecifier } from '../src';
 import { TestProjectHost } from './test-project-host';
+/**
+ * @deprecated
+ */
 export declare const DefaultTimeout = 45000;
+/**
+ * @deprecated
+ */
 export declare function runTargetSpec(host: TestProjectHost, targetSpec: TargetSpecifier, overrides?: {}, timeout?: number, logger?: logging.Logger): Observable<BuildEvent>;
