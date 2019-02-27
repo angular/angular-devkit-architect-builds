@@ -6,6 +6,6 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { json } from '@angular-devkit/core';
-import { BuilderHandlerFn } from './api';
+import { BuilderHandlerFn, BuilderOutput } from './api';
 import { Builder } from './internal';
-export declare function createBuilder<OptT extends json.JsonObject>(fn: BuilderHandlerFn<OptT>): Builder<OptT>;
+export declare function createBuilder<OptT extends json.JsonObject, OutT extends BuilderOutput = BuilderOutput>(fn: BuilderHandlerFn<OptT>): Builder<OptT>;
