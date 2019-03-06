@@ -91,6 +91,16 @@ export interface BuilderRun {
     stop(): Promise<void>;
 }
 /**
+ * Additional optional scheduling options.
+ */
+export interface ScheduleOptions {
+    /**
+     * Logger to pass to the builder. Note that messages will stop being forwarded, and if you want
+     * to log a builder scheduled from your builder you should forward log events yourself.
+     */
+    logger?: logging.Logger;
+}
+/**
  * The context received as a second argument in your builder.
  */
 export interface BuilderContext {
@@ -133,17 +143,27 @@ export interface BuilderContext {
      * Targets are considered the same if the project, the target AND the configuration are the same.
      * @param target The target to schedule.
      * @param overrides A set of options to override the workspace set of options.
+     * @param scheduleOptions Additional optional scheduling options.
      * @return A promise of a run. It will resolve when all the members of the run are available.
      */
-    scheduleTarget(target: Target, overrides?: json.JsonObject): Promise<BuilderRun>;
+    scheduleTarget(target: Target, overrides?: json.JsonObject, scheduleOptions?: ScheduleOptions): Promise<BuilderRun>;
     /**
      * Schedule a builder by its name. This can be the same builder that is being executed.
      * @param builderName The name of the builder, ie. its `packageName:builderName` tuple.
      * @param options All options to use for the builder (by default empty object). There is no
      *     additional options added, e.g. from the workspace.
+     * @param scheduleOptions Additional optional scheduling options.
      * @return A promise of a run. It will resolve when all the members of the run are available.
      */
-    scheduleBuilder(builderName: string, options?: json.JsonObject): Promise<BuilderRun>;
+    scheduleBuilder(builderName: string, options?: json.JsonObject, scheduleOptions?: ScheduleOptions): Promise<BuilderRun>;
+    /**
+     * Resolve and return options for a specified target. If the target isn't defined in the
+     * workspace this will reject the promise. This object will be read directly from the workspace
+     * but not validated against the builder of the target.
+     * @param target The target to resolve the options of.
+     * @return A non-validated object resolved from the workspace.
+     */
+    getTargetOptions(target: Target): Promise<json.JsonObject>;
     /**
      * Set the builder to running. This should be used if an external event triggered a re-run,
      * e.g. a file watched was changed.
