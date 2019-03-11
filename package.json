@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#efac7b6",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#9ef4a05",
     "rxjs": "6.4.0"
   },
   "builders": "./builders/builders.json",
@@ -21,8 +21,8 @@
     "url": "https://github.com/angular/angular-cli.git"
   },
   "engines": {
-    "node": ">= 8.9.0",
-    "npm": ">= 5.5.1"
+    "node": ">= 10.9.0",
+    "npm": ">= 6.2.0"
   },
   "author": "Angular Authors",
   "license": "MIT",
