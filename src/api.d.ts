@@ -182,6 +182,10 @@ export interface BuilderContext {
      * @param status Update the status string. If omitted the status string is not modified.
      */
     reportProgress(current: number, total?: number, status?: string): void;
+    /**
+     * Add teardown logic to this Context, so that when it's being stopped it will execute teardown.
+     */
+    addTeardown(teardown: () => (Promise<void> | void)): void;
 }
 /**
  * An accepted return value from a builder. Can be either an Observable, a Promise or a vector.
@@ -214,3 +218,21 @@ export declare type BuilderInfo = json.JsonObject & {
  * Returns a string of "project:target[:configuration]" for the target object.
  */
 export declare function targetStringFromTarget({ project, target, configuration }: Target): string;
+/**
+ * Return a Target tuple from a string.
+ */
+export declare function targetFromTargetString(str: string): Target;
+/**
+ * Schedule a target, and forget about its run. This will return an observable of outputs, that
+ * as a a teardown will stop the target from running. This means that the Run object this returns
+ * should not be shared.
+ *
+ * The reason this is not part of the Context interface is to keep the Context as normal form as
+ * possible. This is really an utility that people would implement in their project.
+ *
+ * @param context The context of your current execution.
+ * @param target The target to schedule.
+ * @param overrides Overrides that are used in the target.
+ * @param scheduleOptions Additional scheduling options.
+ */
+export declare function scheduleTargetAndForget(context: BuilderContext, target: Target, overrides?: json.JsonObject, scheduleOptions?: ScheduleOptions): Observable<BuilderOutput>;
