@@ -27,6 +27,6 @@ export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<
     resolveBuilder(builderStr: string): Promise<NodeModulesBuilderInfo>;
     getCurrentDirectory(): Promise<string>;
     getWorkspaceRoot(): Promise<string>;
-    getOptionsForTarget(target: Target): Promise<json.JsonObject>;
+    getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;
     loadBuilder(info: NodeModulesBuilderInfo): Promise<Builder>;
 }
