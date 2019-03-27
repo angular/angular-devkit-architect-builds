@@ -23,7 +23,9 @@ async function scheduleByName(name, buildOptions, options) {
     const description = await job.description.toPromise();
     const info = description.info;
     const id = ++_uniqueId;
-    const message = Object.assign({ id, currentDirectory: workspaceRoot, workspaceRoot: currentDirectory, info: info, options: buildOptions }, (options.target ? { target: options.target } : {}));
+    const message = Object.assign({ id,
+        currentDirectory,
+        workspaceRoot, info: info, options: buildOptions }, (options.target ? { target: options.target } : {}));
     // Wait for the job to be ready.
     if (job.state !== core_1.experimental.jobs.JobState.Started) {
         stateSubscription = job.outboundBus.subscribe(event => {
