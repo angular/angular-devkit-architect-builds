@@ -19,6 +19,7 @@ function createBuilder(fn) {
         const scheduler = context.scheduler;
         const progressChannel = context.createChannel('progress');
         const logChannel = context.createChannel('log');
+        const analyticsChannel = context.createChannel('analytics');
         let currentState = api_1.BuilderProgressState.Stopped;
         const teardownLogics = [];
         let tearingDown = false;
@@ -128,6 +129,7 @@ function createBuilder(fn) {
                                 progress({ state: currentState, current, total, status }, context);
                         }
                     },
+                    analytics: new core_1.analytics.ForwardingAnalytics(report => analyticsChannel.next(report)),
                     addTeardown(teardown) {
                         teardownLogics.push(teardown);
                     },

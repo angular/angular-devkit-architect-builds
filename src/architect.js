@@ -235,6 +235,7 @@ class Architect {
             logger: scheduleOptions.logger || new core_1.logging.NullLogger(),
             currentDirectory: this._host.getCurrentDirectory(),
             workspaceRoot: this._host.getWorkspaceRoot(),
+            analytics: scheduleOptions.analytics,
         });
     }
     scheduleTarget(target, overrides = {}, scheduleOptions = {}) {
@@ -243,6 +244,7 @@ class Architect {
             logger: scheduleOptions.logger || new core_1.logging.NullLogger(),
             currentDirectory: this._host.getCurrentDirectory(),
             workspaceRoot: this._host.getWorkspaceRoot(),
+            analytics: scheduleOptions.analytics,
         });
     }
 }
