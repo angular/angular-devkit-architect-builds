@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { json } from '@angular-devkit/core';
-import { BuilderInfo, Target } from '../src';
+import { BuilderInfo, Target } from '../src/index2';
 import { ArchitectHost, Builder } from '../src/internal';
 export declare class TestingArchitectHost implements ArchitectHost {
     workspaceRoot: string;
