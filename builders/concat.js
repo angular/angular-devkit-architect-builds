@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
-const index2_1 = require("../src/index2");
-exports.default = index2_1.createBuilder((options, context) => {
+const src_1 = require("../src");
+exports.default = src_1.createBuilder((options, context) => {
     const allRuns = [];
     context.reportProgress(0, (options.targets ? options.targets.length : 0)
         + (options.builders ? options.builders.length : 0));

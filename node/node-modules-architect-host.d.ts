@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { experimental, json } from '@angular-devkit/core';
-import { BuilderInfo } from '../src/index2';
+import { BuilderInfo } from '../src';
 import { Target } from '../src/input-schema';
 import { ArchitectHost, Builder } from '../src/internal';
 export declare type NodeModulesBuilderInfo = BuilderInfo & {
