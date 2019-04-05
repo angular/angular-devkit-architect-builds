@@ -7,5 +7,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-const index2_1 = require("../src/index2");
-exports.default = index2_1.createBuilder(() => ({ success: true }));
+const src_1 = require("../src");
+exports.default = src_1.createBuilder(() => ({ success: true }));

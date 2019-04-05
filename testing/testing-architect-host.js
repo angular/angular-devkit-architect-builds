@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const index2_1 = require("../src/index2");
+const src_1 = require("../src");
 class TestingArchitectHost {
     /**
      * Can provide a backend host, in case of integration tests.
@@ -43,10 +43,10 @@ class TestingArchitectHost {
         }
     }
     addTarget(target, builderName, options = {}) {
-        this._targetMap.set(index2_1.targetStringFromTarget(target), { builderName, options });
+        this._targetMap.set(src_1.targetStringFromTarget(target), { builderName, options });
     }
     async getBuilderNameForTarget(target) {
-        const name = index2_1.targetStringFromTarget(target);
+        const name = src_1.targetStringFromTarget(target);
         const maybeTarget = this._targetMap.get(name);
         if (!maybeTarget) {
             return this._backendHost && this._backendHost.getBuilderNameForTarget(target);
@@ -71,7 +71,7 @@ class TestingArchitectHost {
         return this.workspaceRoot;
     }
     async getOptionsForTarget(target) {
-        const name = index2_1.targetStringFromTarget(target);
+        const name = src_1.targetStringFromTarget(target);
         const maybeTarget = this._targetMap.get(name);
         if (!maybeTarget) {
             return this._backendHost && this._backendHost.getOptionsForTarget(target);

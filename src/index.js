@@ -15,5 +15,3 @@ var architect_1 = require("./architect");
 exports.Architect = architect_1.Architect;
 var create_builder_1 = require("./create-builder");
 exports.createBuilder = create_builder_1.createBuilder;
-const index2 = require("./index2");
-exports.index2 = index2;
