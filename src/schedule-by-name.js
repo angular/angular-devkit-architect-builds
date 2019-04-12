@@ -10,7 +10,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
-const analytics_1 = require("../../core/src/analytics");
 const api_1 = require("./api");
 const progressSchema = require('./progress-schema.json');
 let _uniqueId = 0;
@@ -54,7 +53,7 @@ async function scheduleByName(name, buildOptions, options) {
     const output = job.output.pipe(operators_1.map(output => (Object.assign({}, output, options.target ? { target: options.target } : 0, { info }))), operators_1.shareReplay());
     // If there's an analytics object, take the job channel and report it to the analytics.
     if (options.analytics) {
-        const reporter = new analytics_1.AnalyticsReporter(options.analytics);
+        const reporter = new core_1.analytics.AnalyticsReporter(options.analytics);
         job.getChannel('analytics')
             .subscribe(report => reporter.report(report));
     }
