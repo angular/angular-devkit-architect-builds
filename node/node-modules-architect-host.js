@@ -66,7 +66,10 @@ class WorkspaceNodeModulesArchitectHost {
         if (target.configuration && !targetSpec['configurations']) {
             throw new Error('Configuration not set in the workspace.');
         }
-        return Object.assign({}, targetSpec['options'], (target.configuration ? targetSpec['configurations'][target.configuration] : 0));
+        return {
+            ...targetSpec['options'],
+            ...(target.configuration ? targetSpec['configurations'][target.configuration] : 0),
+        };
     }
     async loadBuilder(info) {
         const builder = (await Promise.resolve().then(() => require(info.import))).default;

@@ -41,7 +41,12 @@ function createBuilder(fn) {
                     status = progress.status;
                 }
             }
-            progressChannel.next(Object.assign({}, progress, (context.target && { target: context.target }), (context.builder && { builder: context.builder }), { id: context.id }));
+            progressChannel.next({
+                ...progress,
+                ...(context.target && { target: context.target }),
+                ...(context.builder && { builder: context.builder }),
+                id: context.id,
+            });
         }
         return new rxjs_1.Observable(observer => {
             const subscriptions = [];

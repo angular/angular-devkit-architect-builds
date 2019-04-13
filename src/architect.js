@@ -26,11 +26,14 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         const inboundBus = context.inboundBus.pipe(operators_1.concatMap(message => {
             if (message.kind === core_1.experimental.jobs.JobInboundMessageKind.Input) {
                 const v = message.value;
-                const options = Object.assign({}, baseOptions, v.options);
+                const options = {
+                    ...baseOptions,
+                    ...v.options,
+                };
                 // Validate v against the options schema.
                 return registry.compile(info.optionSchema).pipe(operators_1.concatMap(validation => validation(options)), operators_1.map(result => {
                     if (result.success) {
-                        return Object.assign({}, v, { options: result.data });
+                        return { ...v, options: result.data };
                     }
                     else if (result.errors) {
                         throw new Error('Options did not validate.' + result.errors.join());
@@ -38,7 +41,7 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                     else {
                         return v;
                     }
-                }), operators_1.map(value => (Object.assign({}, message, { value }))));
+                }), operators_1.map(value => ({ ...message, value })));
             }
             else {
                 return rxjs_1.of(message);
@@ -51,10 +54,16 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
             if (builder === null) {
                 throw new Error(`Cannot load builder for builderInfo ${JSON.stringify(info, null, 2)}`);
             }
-            return builder.handler(argument, Object.assign({}, context, { inboundBus })).pipe(operators_1.map(output => {
+            return builder.handler(argument, { ...context, inboundBus }).pipe(operators_1.map(output => {
                 if (output.kind === core_1.experimental.jobs.JobOutboundMessageKind.Output) {
                     // Add target to it.
-                    return Object.assign({}, output, { value: Object.assign({}, output.value, target ? { target } : 0) });
+                    return {
+                        ...output,
+                        value: {
+                            ...output.value,
+                            ...target ? { target } : 0,
+                        },
+                    };
                 }
                 else {
                     return output;

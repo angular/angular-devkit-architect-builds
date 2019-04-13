@@ -23,9 +23,14 @@ async function scheduleByName(name, buildOptions, options) {
     const description = await job.description.toPromise();
     const info = description.info;
     const id = ++_uniqueId;
-    const message = Object.assign({ id,
+    const message = {
+        id,
         currentDirectory,
-        workspaceRoot, info: info, options: buildOptions }, (options.target ? { target: options.target } : {}));
+        workspaceRoot,
+        info: info,
+        options: buildOptions,
+        ...(options.target ? { target: options.target } : {}),
+    };
     // Wait for the job to be ready.
     if (job.state !== core_1.experimental.jobs.JobState.Started) {
         stateSubscription = job.outboundBus.subscribe(event => {
@@ -50,7 +55,11 @@ async function scheduleByName(name, buildOptions, options) {
             }
         },
     });
-    const output = job.output.pipe(operators_1.map(output => (Object.assign({}, output, options.target ? { target: options.target } : 0, { info }))), operators_1.shareReplay());
+    const output = job.output.pipe(operators_1.map(output => ({
+        ...output,
+        ...options.target ? { target: options.target } : 0,
+        info,
+    })), operators_1.shareReplay());
     // If there's an analytics object, take the job channel and report it to the analytics.
     if (options.analytics) {
         const reporter = new core_1.analytics.AnalyticsReporter(options.analytics);
@@ -76,6 +85,10 @@ async function scheduleByName(name, buildOptions, options) {
 }
 exports.scheduleByName = scheduleByName;
 async function scheduleByTarget(target, overrides, options) {
-    return scheduleByName(`{${api_1.targetStringFromTarget(target)}}`, overrides, Object.assign({}, options, { target, logger: options.logger }));
+    return scheduleByName(`{${api_1.targetStringFromTarget(target)}}`, overrides, {
+        ...options,
+        target,
+        logger: options.logger,
+    });
 }
 exports.scheduleByTarget = scheduleByTarget;
