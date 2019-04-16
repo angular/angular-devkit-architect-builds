@@ -25,9 +25,6 @@ class TestingArchitectHost {
         if (!('builders' in packageJson)) {
             throw new Error('Invalid package.json, builders key not found.');
         }
-        if (!packageJson.name) {
-            throw new Error('Invalid package name');
-        }
         const builderJsonPath = packageName + '/' + packageJson['builders'];
         const builderJson = await Promise.resolve().then(() => require(builderJsonPath));
         const builders = builderJson['builders'];
@@ -42,7 +39,7 @@ class TestingArchitectHost {
             }
             const handler = await Promise.resolve().then(() => require(builderJsonPath + '/../' + b.implementation));
             const optionsSchema = await Promise.resolve().then(() => require(builderJsonPath + '/../' + b.schema));
-            this.addBuilder(`${packageJson.name}:${builderName}`, handler, b.description, optionsSchema);
+            this.addBuilder(builderName, handler, b.description, optionsSchema);
         }
     }
     addTarget(target, builderName, options = {}) {
