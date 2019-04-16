@@ -40,7 +40,7 @@ class TestingArchitectHost {
             if (!b.implementation) {
                 continue;
             }
-            const handler = await Promise.resolve().then(() => require(builderJsonPath + '/../' + b.implementation));
+            const handler = (await Promise.resolve().then(() => require(builderJsonPath + '/../' + b.implementation))).default;
             const optionsSchema = await Promise.resolve().then(() => require(builderJsonPath + '/../' + b.schema));
             this.addBuilder(`${packageJson.name}:${builderName}`, handler, b.description, optionsSchema);
         }
