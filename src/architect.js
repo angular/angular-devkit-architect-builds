@@ -36,7 +36,7 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                         return { ...v, options: result.data };
                     }
                     else if (result.errors) {
-                        throw new Error('Options did not validate.' + result.errors.join());
+                        throw new core_1.json.schema.SchemaValidationException(result.errors);
                     }
                     else {
                         return v;
@@ -198,7 +198,7 @@ function _validateOptionsFactory(host, registry) {
                 return rxjs_1.of(data);
             }
             else {
-                throw new Error('Data did not validate: ' + (errors ? errors.join() : 'Unknown error.'));
+                throw new core_1.json.schema.SchemaValidationException(errors);
             }
         })).toPromise();
     }, {
