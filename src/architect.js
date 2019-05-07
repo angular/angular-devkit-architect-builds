@@ -23,7 +23,8 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         info,
     };
     function handler(argument, context) {
-        const inboundBus = context.inboundBus.pipe(operators_1.concatMap(message => {
+        // Add input validation to the inbound bus.
+        const inboundBusWithInputValidation = context.inboundBus.pipe(operators_1.concatMap(message => {
             if (message.kind === core_1.experimental.jobs.JobInboundMessageKind.Input) {
                 const v = message.value;
                 const options = {
@@ -31,16 +32,11 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                     ...v.options,
                 };
                 // Validate v against the options schema.
-                return registry.compile(info.optionSchema).pipe(operators_1.concatMap(validation => validation(options)), operators_1.map(result => {
-                    if (result.success) {
-                        return { ...v, options: result.data };
+                return registry.compile(info.optionSchema).pipe(operators_1.concatMap(validation => validation(options)), operators_1.map(({ data, success, errors }) => {
+                    if (success) {
+                        return { ...v, options: data };
                     }
-                    else if (result.errors) {
-                        throw new core_1.json.schema.SchemaValidationException(result.errors);
-                    }
-                    else {
-                        return v;
-                    }
+                    throw new core_1.json.schema.SchemaValidationException(errors);
                 }), operators_1.map(value => ({ ...message, value })));
             }
             else {
@@ -50,7 +46,10 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         // Using a share replay because the job might be synchronously sending input, but
         // asynchronously listening to it.
         operators_1.shareReplay(1));
-        return rxjs_1.from(host.loadBuilder(info)).pipe(operators_1.concatMap(builder => {
+        // Make an inboundBus that completes instead of erroring out.
+        // We'll merge the errors into the output instead.
+        const inboundBus = rxjs_1.onErrorResumeNext(inboundBusWithInputValidation);
+        const output = rxjs_1.from(host.loadBuilder(info)).pipe(operators_1.concatMap(builder => {
             if (builder === null) {
                 throw new Error(`Cannot load builder for builderInfo ${JSON.stringify(info, null, 2)}`);
             }
@@ -69,7 +68,14 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                     return output;
                 }
             }));
-        }));
+        }), 
+        // Share subscriptions to the output, otherwise the the handler will be re-run.
+        operators_1.shareReplay());
+        // Separate the errors from the inbound bus into their own observable that completes when the
+        // builder output does.
+        const inboundBusErrors = inboundBusWithInputValidation.pipe(operators_1.ignoreElements(), operators_1.takeUntil(rxjs_1.onErrorResumeNext(output.pipe(operators_1.last()))));
+        // Return the builder output plus any input errors.
+        return rxjs_1.merge(inboundBusErrors, output);
     }
     return rxjs_1.of(Object.assign(handler, { jobDescription }));
 }
@@ -197,9 +203,7 @@ function _validateOptionsFactory(host, registry) {
             if (success) {
                 return rxjs_1.of(data);
             }
-            else {
-                throw new core_1.json.schema.SchemaValidationException(errors);
-            }
+            throw new core_1.json.schema.SchemaValidationException(errors);
         })).toPromise();
     }, {
         name: '..validateOptions',
