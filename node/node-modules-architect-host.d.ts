@@ -5,7 +5,7 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { experimental, json, workspaces } from '@angular-devkit/core';
+import { experimental, json } from '@angular-devkit/core';
 import { BuilderInfo } from '../src';
 import { Target } from '../src/input-schema';
 import { ArchitectHost, Builder } from '../src/internal';
@@ -13,13 +13,9 @@ export declare type NodeModulesBuilderInfo = BuilderInfo & {
     import: string;
 };
 export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<NodeModulesBuilderInfo> {
-    protected _workspace: experimental.workspace.Workspace | workspaces.WorkspaceDefinition;
+    protected _workspace: experimental.workspace.Workspace;
     protected _root: string;
-    /**
-     * @deprecated
-     */
     constructor(_workspace: experimental.workspace.Workspace, _root: string);
-    constructor(_workspace: workspaces.WorkspaceDefinition, _root: string);
     getBuilderNameForTarget(target: Target): Promise<any>;
     /**
      * Resolve a builder. This needs to be a string which will be used in a dynamic `import()`
@@ -33,5 +29,4 @@ export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<
     getWorkspaceRoot(): Promise<string>;
     getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;
     loadBuilder(info: NodeModulesBuilderInfo): Promise<Builder>;
-    private findProjectTarget;
 }
