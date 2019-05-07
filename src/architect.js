@@ -214,22 +214,23 @@ function _validateOptionsFactory(host, registry) {
     });
 }
 class Architect {
-    constructor(_host, registry = new core_1.json.schema.CoreSchemaRegistry(), additionalJobRegistry) {
+    constructor(_host, _registry = new core_1.json.schema.CoreSchemaRegistry(), additionalJobRegistry) {
         this._host = _host;
+        this._registry = _registry;
         this._jobCache = new Map();
         this._infoCache = new Map();
         const privateArchitectJobRegistry = new core_1.experimental.jobs.SimpleJobRegistry();
         // Create private jobs.
         privateArchitectJobRegistry.register(_getTargetOptionsFactory(_host));
         privateArchitectJobRegistry.register(_getBuilderNameForTargetFactory(_host));
-        privateArchitectJobRegistry.register(_validateOptionsFactory(_host, registry));
+        privateArchitectJobRegistry.register(_validateOptionsFactory(_host, _registry));
         const jobRegistry = new core_1.experimental.jobs.FallbackRegistry([
-            new ArchitectTargetJobRegistry(_host, registry, this._jobCache, this._infoCache),
-            new ArchitectBuilderJobRegistry(_host, registry, this._jobCache, this._infoCache),
+            new ArchitectTargetJobRegistry(_host, _registry, this._jobCache, this._infoCache),
+            new ArchitectBuilderJobRegistry(_host, _registry, this._jobCache, this._infoCache),
             privateArchitectJobRegistry,
             ...(additionalJobRegistry ? [additionalJobRegistry] : []),
         ]);
-        this._scheduler = new core_1.experimental.jobs.SimpleScheduler(jobRegistry, registry);
+        this._scheduler = new core_1.experimental.jobs.SimpleScheduler(jobRegistry, _registry);
     }
     has(name) {
         return this._scheduler.has(name);
