@@ -10,7 +10,11 @@ class WorkspaceNodeModulesArchitectHost {
         this._root = _root;
     }
     async getBuilderNameForTarget(target) {
-        return this._workspace.getProjectTargets(target.project)[target.target]['builder'];
+        const targetDefinition = this.findProjectTarget(target);
+        if (!targetDefinition) {
+            throw new Error('Project target does not exist.');
+        }
+        return targetDefinition.builder;
     }
     /**
      * Resolve a builder. This needs to be a string which will be used in a dynamic `import()`
@@ -59,7 +63,7 @@ class WorkspaceNodeModulesArchitectHost {
         return this._root;
     }
     async getOptionsForTarget(target) {
-        const targetSpec = this._workspace.getProjectTargets(target.project)[target.target];
+        const targetSpec = this.findProjectTarget(target);
         if (targetSpec === undefined) {
             return null;
         }
@@ -77,6 +81,18 @@ class WorkspaceNodeModulesArchitectHost {
             return builder;
         }
         throw new Error('Builder is not a builder');
+    }
+    findProjectTarget(target) {
+        if ('getProjectTargets' in this._workspace) {
+            return this._workspace.getProjectTargets(target.project)[target.target];
+        }
+        else {
+            const projectDefinition = this._workspace.projects.get(target.project);
+            if (!projectDefinition) {
+                throw new Error('Project does not exist.');
+            }
+            return projectDefinition.targets.get(target.target);
+        }
     }
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;
