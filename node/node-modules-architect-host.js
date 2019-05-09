@@ -83,6 +83,7 @@ class WorkspaceNodeModulesArchitectHost {
         throw new Error('Builder is not a builder');
     }
     findProjectTarget(target) {
+        // NOTE: Remove conditional when deprecated support for experimental workspace API is removed.
         if ('getProjectTargets' in this._workspace) {
             return this._workspace.getProjectTargets(target.project)[target.target];
         }
