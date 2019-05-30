@@ -143,15 +143,15 @@ function createBuilder(fn) {
                 let result;
                 try {
                     result = fn(i.options, context);
+                    if (api_1.isBuilderOutput(result)) {
+                        result = rxjs_1.of(result);
+                    }
+                    else {
+                        result = rxjs_1.from(result);
+                    }
                 }
                 catch (e) {
                     result = rxjs_1.throwError(e);
-                }
-                if (core_1.isPromise(result)) {
-                    result = rxjs_1.from(result);
-                }
-                else if (!rxjs_1.isObservable(result)) {
-                    result = rxjs_1.of(result);
                 }
                 // Manage some state automatically.
                 progress({ state: api_1.BuilderProgressState.Running, current: 0, total: 1 }, context);

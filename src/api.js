@@ -4,6 +4,14 @@ const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const progress_schema_1 = require("./progress-schema");
 exports.BuilderProgressState = progress_schema_1.State;
+// tslint:disable-next-line:no-any
+function isBuilderOutput(obj) {
+    if (!obj || typeof obj.then === 'function' || typeof obj.subscribe === 'function') {
+        return false;
+    }
+    return typeof obj.success === 'boolean';
+}
+exports.isBuilderOutput = isBuilderOutput;
 /**
  * Returns a string of "project:target[:configuration]" for the target object.
  */
