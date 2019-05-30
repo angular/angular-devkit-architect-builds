@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { analytics, experimental, json, logging } from '@angular-devkit/core';
-import { Observable } from 'rxjs';
+import { Observable, SubscribableOrPromise } from 'rxjs';
 import { Schema as RealBuilderInput, Target as RealTarget } from './input-schema';
 import { Schema as RealBuilderOutput } from './output-schema';
 import { Schema as RealBuilderProgress, State as BuilderProgressState } from './progress-schema';
@@ -211,7 +211,8 @@ export interface BuilderContext {
 /**
  * An accepted return value from a builder. Can be either an Observable, a Promise or a vector.
  */
-export declare type BuilderOutputLike = Observable<BuilderOutput> | Promise<BuilderOutput> | BuilderOutput;
+export declare type BuilderOutputLike = SubscribableOrPromise<BuilderOutput> | BuilderOutput;
+export declare function isBuilderOutput(obj: any): obj is BuilderOutput;
 /**
  * A builder handler function. The function signature passed to `createBuilder()`.
  */
