@@ -239,7 +239,8 @@ class Architect {
         return this._scheduler.has(name);
     }
     scheduleBuilder(name, options, scheduleOptions = {}) {
-        if (!/^[^:]+:[^:]+$/.test(name)) {
+        // The below will match 'project:target:configuration'
+        if (!/^[^:]+:[^:]+(:[^:]+)?$/.test(name)) {
             throw new Error('Invalid builder name: ' + JSON.stringify(name));
         }
         return schedule_by_name_1.scheduleByName(name, options, {
