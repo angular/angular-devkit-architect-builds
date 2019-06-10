@@ -67,8 +67,9 @@ class WorkspaceNodeModulesArchitectHost {
         if (targetSpec === undefined) {
             return null;
         }
-        if (target.configuration && !targetSpec['configurations']) {
-            throw new Error('Configuration not set in the workspace.');
+        if (target.configuration
+            && !(targetSpec['configurations'] && targetSpec['configurations'][target.configuration])) {
+            throw new Error(`Configuration '${target.configuration}' is not set in the workspace.`);
         }
         return {
             ...targetSpec['options'],
