@@ -99,6 +99,10 @@ export interface ScheduleOptions {
      * to log a builder scheduled from your builder you should forward log events yourself.
      */
     logger?: logging.Logger;
+    /**
+     * Target to pass to the builder.
+     */
+    target?: Target;
 }
 /**
  * The context received as a second argument in your builder.
