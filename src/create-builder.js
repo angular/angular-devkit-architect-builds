@@ -93,6 +93,7 @@ function createBuilder(fn) {
                     async scheduleBuilder(builderName, options = {}, scheduleOptions = {}) {
                         const run = await schedule_by_name_1.scheduleByName(builderName, options, {
                             scheduler,
+                            target: scheduleOptions.target,
                             logger: scheduleOptions.logger || logger.createChild(''),
                             workspaceRoot: i.workspaceRoot,
                             currentDirectory: i.currentDirectory,
