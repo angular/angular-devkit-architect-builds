@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const node_1 = require("@angular-devkit/core/node");
 const path = require("path");
 const internal_1 = require("../src/internal");
 // TODO: create a base class for all workspace related hosts.
@@ -28,11 +27,8 @@ class WorkspaceNodeModulesArchitectHost {
         if (!builderName) {
             throw new Error('No builder name specified.');
         }
-        const packageJsonPath = node_1.resolve(packageName, {
-            basedir: this._root,
-            checkLocal: true,
-            checkGlobal: true,
-            resolvePackageJson: true,
+        const packageJsonPath = require.resolve(packageName + '/package.json', {
+            paths: [this._root],
         });
         const packageJson = require(packageJsonPath);
         if (!packageJson['builders']) {
