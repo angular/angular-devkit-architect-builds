@@ -32,6 +32,7 @@ export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<
     getCurrentDirectory(): Promise<string>;
     getWorkspaceRoot(): Promise<string>;
     getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;
+    getProjectMetadata(target: Target | string): Promise<json.JsonObject | null>;
     loadBuilder(info: NodeModulesBuilderInfo): Promise<Builder>;
     private findProjectTarget;
 }
