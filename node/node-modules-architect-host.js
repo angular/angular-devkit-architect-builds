@@ -1,7 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
+const v8 = require("v8");
 const internal_1 = require("../src/internal");
+function clone(obj) {
+    const serialize = v8.serialize;
+    const deserialize = v8.deserialize;
+    try {
+        return deserialize(serialize(obj));
+    }
+    catch (_a) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+}
 // TODO: create a base class for all workspace related hosts.
 class WorkspaceNodeModulesArchitectHost {
     constructor(_workspace, _root) {
@@ -78,30 +89,25 @@ class WorkspaceNodeModulesArchitectHost {
                 }
             }
         }
-        return {
+        const options = {
             ...targetSpec['options'],
             ...additionalOptions,
         };
+        return clone(options);
     }
     async getProjectMetadata(target) {
         const projectName = typeof target === 'string' ? target : target.project;
-        // NOTE: Remove conditional when deprecated support for experimental workspace API is removed.
-        if ('getProject' in this._workspace) {
-            return this._workspace.getProject(projectName);
+        const projectDefinition = this._workspace.projects.get(projectName);
+        if (!projectDefinition) {
+            throw new Error('Project does not exist.');
         }
-        else {
-            const projectDefinition = this._workspace.projects.get(projectName);
-            if (!projectDefinition) {
-                throw new Error('Project does not exist.');
-            }
-            const metadata = {
-                root: projectDefinition.root,
-                sourceRoot: projectDefinition.sourceRoot,
-                prefix: projectDefinition.prefix,
-                ...projectDefinition.extensions,
-            };
-            return metadata;
-        }
+        const metadata = {
+            root: projectDefinition.root,
+            sourceRoot: projectDefinition.sourceRoot,
+            prefix: projectDefinition.prefix,
+            ...clone(projectDefinition.extensions),
+        };
+        return metadata;
     }
     async loadBuilder(info) {
         const builder = (await Promise.resolve().then(() => require(info.import))).default;
@@ -111,17 +117,11 @@ class WorkspaceNodeModulesArchitectHost {
         throw new Error('Builder is not a builder');
     }
     findProjectTarget(target) {
-        // NOTE: Remove conditional when deprecated support for experimental workspace API is removed.
-        if ('getProjectTargets' in this._workspace) {
-            return this._workspace.getProjectTargets(target.project)[target.target];
+        const projectDefinition = this._workspace.projects.get(target.project);
+        if (!projectDefinition) {
+            throw new Error('Project does not exist.');
         }
-        else {
-            const projectDefinition = this._workspace.projects.get(target.project);
-            if (!projectDefinition) {
-                throw new Error('Project does not exist.');
-            }
-            return projectDefinition.targets.get(target.target);
-        }
+        return projectDefinition.targets.get(target.target);
     }
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;
