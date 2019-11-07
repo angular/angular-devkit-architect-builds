@@ -23,7 +23,8 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         info,
     };
     function handler(argument, context) {
-        const inboundBus = context.inboundBus.pipe(operators_1.concatMap(message => {
+        // Add input validation to the inbound bus.
+        const inboundBusWithInputValidation = context.inboundBus.pipe(operators_1.concatMap(message => {
             if (message.kind === core_1.experimental.jobs.JobInboundMessageKind.Input) {
                 const v = message.value;
                 const options = {
@@ -31,16 +32,12 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                     ...v.options,
                 };
                 // Validate v against the options schema.
-                return registry.compile(info.optionSchema).pipe(operators_1.concatMap(validation => validation(options)), operators_1.map(result => {
-                    if (result.success) {
-                        return { ...v, options: result.data };
+                return registry.compile(info.optionSchema).pipe(operators_1.concatMap(validation => validation(options)), operators_1.map((validationResult) => {
+                    const { data, success, errors } = validationResult;
+                    if (success) {
+                        return { ...v, options: data };
                     }
-                    else if (result.errors) {
-                        throw new Error('Options did not validate.' + result.errors.join());
-                    }
-                    else {
-                        return v;
-                    }
+                    throw new core_1.json.schema.SchemaValidationException(errors);
                 }), operators_1.map(value => ({ ...message, value })));
             }
             else {
@@ -50,7 +47,10 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         // Using a share replay because the job might be synchronously sending input, but
         // asynchronously listening to it.
         operators_1.shareReplay(1));
-        return rxjs_1.from(host.loadBuilder(info)).pipe(operators_1.concatMap(builder => {
+        // Make an inboundBus that completes instead of erroring out.
+        // We'll merge the errors into the output instead.
+        const inboundBus = rxjs_1.onErrorResumeNext(inboundBusWithInputValidation);
+        const output = rxjs_1.from(host.loadBuilder(info)).pipe(operators_1.concatMap(builder => {
             if (builder === null) {
                 throw new Error(`Cannot load builder for builderInfo ${JSON.stringify(info, null, 2)}`);
             }
@@ -69,7 +69,14 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
                     return output;
                 }
             }));
-        }));
+        }), 
+        // Share subscriptions to the output, otherwise the the handler will be re-run.
+        operators_1.shareReplay());
+        // Separate the errors from the inbound bus into their own observable that completes when the
+        // builder output does.
+        const inboundBusErrors = inboundBusWithInputValidation.pipe(operators_1.ignoreElements(), operators_1.takeUntil(rxjs_1.onErrorResumeNext(output.pipe(operators_1.last()))));
+        // Return the builder output plus any input errors.
+        return rxjs_1.merge(inboundBusErrors, output);
     }
     return rxjs_1.of(Object.assign(handler, { jobDescription }));
 }
@@ -173,6 +180,25 @@ function _getTargetOptionsFactory(host) {
         argument: inputSchema.properties.target,
     });
 }
+function _getProjectMetadataFactory(host) {
+    return core_1.experimental.jobs.createJobHandler(target => {
+        return host.getProjectMetadata(target).then(options => {
+            if (options === null) {
+                throw new Error(`Invalid target: ${JSON.stringify(target)}.`);
+            }
+            return options;
+        });
+    }, {
+        name: '..getProjectMetadata',
+        output: { type: 'object' },
+        argument: {
+            oneOf: [
+                { type: 'string' },
+                inputSchema.properties.target,
+            ],
+        },
+    });
+}
 function _getBuilderNameForTargetFactory(host) {
     return core_1.experimental.jobs.createJobHandler(async (target) => {
         const builderName = await host.getBuilderNameForTarget(target);
@@ -197,9 +223,7 @@ function _validateOptionsFactory(host, registry) {
             if (success) {
                 return rxjs_1.of(data);
             }
-            else {
-                throw new Error('Data did not validate: ' + (errors ? errors.join() : 'Unknown error.'));
-            }
+            throw new core_1.json.schema.SchemaValidationException(errors);
         })).toPromise();
     }, {
         name: '..validateOptions',
@@ -214,29 +238,30 @@ function _validateOptionsFactory(host, registry) {
     });
 }
 class Architect {
-    constructor(_host, _registry = new core_1.json.schema.CoreSchemaRegistry(), additionalJobRegistry) {
+    constructor(_host, registry = new core_1.json.schema.CoreSchemaRegistry(), additionalJobRegistry) {
         this._host = _host;
-        this._registry = _registry;
         this._jobCache = new Map();
         this._infoCache = new Map();
         const privateArchitectJobRegistry = new core_1.experimental.jobs.SimpleJobRegistry();
         // Create private jobs.
         privateArchitectJobRegistry.register(_getTargetOptionsFactory(_host));
         privateArchitectJobRegistry.register(_getBuilderNameForTargetFactory(_host));
-        privateArchitectJobRegistry.register(_validateOptionsFactory(_host, _registry));
+        privateArchitectJobRegistry.register(_validateOptionsFactory(_host, registry));
+        privateArchitectJobRegistry.register(_getProjectMetadataFactory(_host));
         const jobRegistry = new core_1.experimental.jobs.FallbackRegistry([
-            new ArchitectTargetJobRegistry(_host, _registry, this._jobCache, this._infoCache),
-            new ArchitectBuilderJobRegistry(_host, _registry, this._jobCache, this._infoCache),
+            new ArchitectTargetJobRegistry(_host, registry, this._jobCache, this._infoCache),
+            new ArchitectBuilderJobRegistry(_host, registry, this._jobCache, this._infoCache),
             privateArchitectJobRegistry,
             ...(additionalJobRegistry ? [additionalJobRegistry] : []),
         ]);
-        this._scheduler = new core_1.experimental.jobs.SimpleScheduler(jobRegistry, _registry);
+        this._scheduler = new core_1.experimental.jobs.SimpleScheduler(jobRegistry, registry);
     }
     has(name) {
         return this._scheduler.has(name);
     }
     scheduleBuilder(name, options, scheduleOptions = {}) {
-        if (!/^[^:]+:[^:]+$/.test(name)) {
+        // The below will match 'project:target:configuration'
+        if (!/^[^:]+:[^:]+(:[^:]+)?$/.test(name)) {
             throw new Error('Invalid builder name: ' + JSON.stringify(name));
         }
         return schedule_by_name_1.scheduleByName(name, options, {

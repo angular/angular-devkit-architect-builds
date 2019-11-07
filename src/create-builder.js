@@ -13,6 +13,7 @@ const operators_1 = require("rxjs/operators");
 const api_1 = require("./api");
 const internal_1 = require("./internal");
 const schedule_by_name_1 = require("./schedule-by-name");
+// tslint:disable-next-line: no-big-function
 function createBuilder(fn) {
     const cjh = core_1.experimental.jobs.createJobHandler;
     const handler = cjh((options, context) => {
@@ -93,6 +94,7 @@ function createBuilder(fn) {
                     async scheduleBuilder(builderName, options = {}, scheduleOptions = {}) {
                         const run = await schedule_by_name_1.scheduleByName(builderName, options, {
                             scheduler,
+                            target: scheduleOptions.target,
                             logger: scheduleOptions.logger || logger.createChild(''),
                             workspaceRoot: i.workspaceRoot,
                             currentDirectory: i.currentDirectory,
@@ -103,6 +105,9 @@ function createBuilder(fn) {
                     },
                     async getTargetOptions(target) {
                         return scheduler.schedule('..getTargetOptions', target).output.toPromise();
+                    },
+                    async getProjectMetadata(target) {
+                        return scheduler.schedule('..getProjectMetadata', target).output.toPromise();
                     },
                     async getBuilderNameForTarget(target) {
                         return scheduler.schedule('..getBuilderNameForTarget', target).output.toPromise();
@@ -143,15 +148,15 @@ function createBuilder(fn) {
                 let result;
                 try {
                     result = fn(i.options, context);
+                    if (api_1.isBuilderOutput(result)) {
+                        result = rxjs_1.of(result);
+                    }
+                    else {
+                        result = rxjs_1.from(result);
+                    }
                 }
                 catch (e) {
                     result = rxjs_1.throwError(e);
-                }
-                if (core_1.isPromise(result)) {
-                    result = rxjs_1.from(result);
-                }
-                else if (!rxjs_1.isObservable(result)) {
-                    result = rxjs_1.of(result);
                 }
                 // Manage some state automatically.
                 progress({ state: api_1.BuilderProgressState.Running, current: 0, total: 1 }, context);

@@ -1,8 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const node_1 = require("@angular-devkit/core/node");
 const path = require("path");
+const v8 = require("v8");
 const internal_1 = require("../src/internal");
+function clone(obj) {
+    const serialize = v8.serialize;
+    const deserialize = v8.deserialize;
+    try {
+        return deserialize(serialize(obj));
+    }
+    catch (_a) {
+        return JSON.parse(JSON.stringify(obj));
+    }
+}
 // TODO: create a base class for all workspace related hosts.
 class WorkspaceNodeModulesArchitectHost {
     constructor(_workspace, _root) {
@@ -10,7 +20,11 @@ class WorkspaceNodeModulesArchitectHost {
         this._root = _root;
     }
     async getBuilderNameForTarget(target) {
-        return this._workspace.getProjectTargets(target.project)[target.target]['builder'];
+        const targetDefinition = this.findProjectTarget(target);
+        if (!targetDefinition) {
+            throw new Error('Project target does not exist.');
+        }
+        return targetDefinition.builder;
     }
     /**
      * Resolve a builder. This needs to be a string which will be used in a dynamic `import()`
@@ -24,11 +38,8 @@ class WorkspaceNodeModulesArchitectHost {
         if (!builderName) {
             throw new Error('No builder name specified.');
         }
-        const packageJsonPath = node_1.resolve(packageName, {
-            basedir: this._root,
-            checkLocal: true,
-            checkGlobal: true,
-            resolvePackageJson: true,
+        const packageJsonPath = require.resolve(packageName + '/package.json', {
+            paths: [this._root],
         });
         const packageJson = require(packageJsonPath);
         if (!packageJson['builders']) {
@@ -59,17 +70,44 @@ class WorkspaceNodeModulesArchitectHost {
         return this._root;
     }
     async getOptionsForTarget(target) {
-        const targetSpec = this._workspace.getProjectTargets(target.project)[target.target];
+        const targetSpec = this.findProjectTarget(target);
         if (targetSpec === undefined) {
             return null;
         }
-        if (target.configuration && !targetSpec['configurations']) {
-            throw new Error('Configuration not set in the workspace.');
+        let additionalOptions = {};
+        if (target.configuration) {
+            const configurations = target.configuration.split(',').map(c => c.trim());
+            for (const configuration of configurations) {
+                if (!(targetSpec['configurations'] && targetSpec['configurations'][configuration])) {
+                    throw new Error(`Configuration '${configuration}' is not set in the workspace.`);
+                }
+                else {
+                    additionalOptions = {
+                        ...additionalOptions,
+                        ...targetSpec['configurations'][configuration],
+                    };
+                }
+            }
         }
-        return {
+        const options = {
             ...targetSpec['options'],
-            ...(target.configuration ? targetSpec['configurations'][target.configuration] : 0),
+            ...additionalOptions,
         };
+        return clone(options);
+    }
+    async getProjectMetadata(target) {
+        const projectName = typeof target === 'string' ? target : target.project;
+        const projectDefinition = this._workspace.projects.get(projectName);
+        if (!projectDefinition) {
+            throw new Error('Project does not exist.');
+        }
+        const metadata = {
+            root: projectDefinition.root,
+            sourceRoot: projectDefinition.sourceRoot,
+            prefix: projectDefinition.prefix,
+            ...clone(projectDefinition.extensions),
+        };
+        return metadata;
     }
     async loadBuilder(info) {
         const builder = (await Promise.resolve().then(() => require(info.import))).default;
@@ -77,6 +115,13 @@ class WorkspaceNodeModulesArchitectHost {
             return builder;
         }
         throw new Error('Builder is not a builder');
+    }
+    findProjectTarget(target) {
+        const projectDefinition = this._workspace.projects.get(target.project);
+        if (!projectDefinition) {
+            throw new Error('Project does not exist.');
+        }
+        return projectDefinition.targets.get(target.target);
     }
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;

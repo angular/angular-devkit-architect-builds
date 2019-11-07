@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 import { analytics, experimental, json, logging } from '@angular-devkit/core';
-import { Observable } from 'rxjs';
+import { Observable, SubscribableOrPromise } from 'rxjs';
 import { Schema as RealBuilderInput, Target as RealTarget } from './input-schema';
 import { Schema as RealBuilderOutput } from './output-schema';
 import { Schema as RealBuilderProgress, State as BuilderProgressState } from './progress-schema';
@@ -99,6 +99,10 @@ export interface ScheduleOptions {
      * to log a builder scheduled from your builder you should forward log events yourself.
      */
     logger?: logging.Logger;
+    /**
+     * Target to pass to the builder.
+     */
+    target?: Target;
 }
 /**
  * The context received as a second argument in your builder.
@@ -164,6 +168,8 @@ export interface BuilderContext {
      * @return A non-validated object resolved from the workspace.
      */
     getTargetOptions(target: Target): Promise<json.JsonObject>;
+    getProjectMetadata(projectName: string): Promise<json.JsonObject>;
+    getProjectMetadata(target: Target): Promise<json.JsonObject>;
     /**
      * Resolves and return a builder name. The exact format of the name is up to the host,
      * so it should not be parsed to gather information (it's free form). This string can be
@@ -211,7 +217,8 @@ export interface BuilderContext {
 /**
  * An accepted return value from a builder. Can be either an Observable, a Promise or a vector.
  */
-export declare type BuilderOutputLike = Observable<BuilderOutput> | Promise<BuilderOutput> | BuilderOutput;
+export declare type BuilderOutputLike = SubscribableOrPromise<BuilderOutput> | BuilderOutput;
+export declare function isBuilderOutput(obj: any): obj is BuilderOutput;
 /**
  * A builder handler function. The function signature passed to `createBuilder()`.
  */
