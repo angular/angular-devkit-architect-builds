@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.WorkspaceNodeModulesArchitectHost = void 0;
 const path = require("path");
 const v8 = require("v8");
 const internal_1 = require("../src/internal");
