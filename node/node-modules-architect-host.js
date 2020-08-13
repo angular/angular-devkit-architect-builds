@@ -100,7 +100,7 @@ class WorkspaceNodeModulesArchitectHost {
         const projectName = typeof target === 'string' ? target : target.project;
         const projectDefinition = this._workspace.projects.get(projectName);
         if (!projectDefinition) {
-            throw new Error(`Project "${projectName}" does not exist.`);
+            throw new Error('Project does not exist.');
         }
         const metadata = {
             root: projectDefinition.root,
@@ -120,7 +120,7 @@ class WorkspaceNodeModulesArchitectHost {
     findProjectTarget(target) {
         const projectDefinition = this._workspace.projects.get(target.project);
         if (!projectDefinition) {
-            throw new Error(`Project "${target.project}" does not exist.`);
+            throw new Error('Project does not exist.');
         }
         return projectDefinition.targets.get(target.target);
     }
