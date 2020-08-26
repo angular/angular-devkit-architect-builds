@@ -217,8 +217,9 @@ export interface BuilderContext {
 /**
  * An accepted return value from a builder. Can be either an Observable, a Promise or a vector.
  */
-export declare type BuilderOutputLike = SubscribableOrPromise<BuilderOutput> | BuilderOutput;
+export declare type BuilderOutputLike = AsyncIterable<BuilderOutput> | SubscribableOrPromise<BuilderOutput> | BuilderOutput;
 export declare function isBuilderOutput(obj: any): obj is BuilderOutput;
+export declare function fromAsyncIterable<T>(iterable: AsyncIterable<T>): Observable<T>;
 /**
  * A builder handler function. The function signature passed to `createBuilder()`.
  */

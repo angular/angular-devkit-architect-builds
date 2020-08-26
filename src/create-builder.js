@@ -152,6 +152,9 @@ function createBuilder(fn) {
                     if (api_1.isBuilderOutput(result)) {
                         result = rxjs_1.of(result);
                     }
+                    else if (!rxjs_1.isObservable(result) && isAsyncIterable(result)) {
+                        result = api_1.fromAsyncIterable(result);
+                    }
                     else {
                         result = rxjs_1.from(result);
                     }
@@ -179,3 +182,6 @@ function createBuilder(fn) {
     };
 }
 exports.createBuilder = createBuilder;
+function isAsyncIterable(obj) {
+    return !!obj && typeof obj[Symbol.asyncIterator] === 'function';
+}
