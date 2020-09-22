@@ -19,4 +19,3 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 __exportStar(require("./testing-architect-host"), exports);
 __exportStar(require("./test-project-host"), exports);
-__exportStar(require("./test-logger"), exports);
