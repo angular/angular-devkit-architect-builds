@@ -2,13 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkspaceNodeModulesArchitectHost = void 0;
 const path = require("path");
-const v8 = require("v8");
+const v8_1 = require("v8");
 const internal_1 = require("../src/internal");
 function clone(obj) {
-    const serialize = v8.serialize;
-    const deserialize = v8.deserialize;
     try {
-        return deserialize(serialize(obj));
+        return v8_1.deserialize(v8_1.serialize(obj));
     }
     catch (_a) {
         return JSON.parse(JSON.stringify(obj));
