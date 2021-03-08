@@ -62,6 +62,10 @@ class WorkspaceNodeModulesArchitectHost {
                     var _a;
                     return !!((_a = workspaceOrHost.projects.get(project)) === null || _a === void 0 ? void 0 : _a.targets.has(target));
                 },
+                async getDefaultConfigurationName(project, target) {
+                    var _a, _b;
+                    return (_b = (_a = workspaceOrHost.projects.get(project)) === null || _a === void 0 ? void 0 : _a.targets.get(target)) === null || _b === void 0 ? void 0 : _b.defaultConfiguration;
+                },
             };
         }
     }
@@ -116,8 +120,9 @@ class WorkspaceNodeModulesArchitectHost {
             return null;
         }
         let options = await this.workspaceHost.getOptions(target.project, target.target);
-        if (target.configuration) {
-            const configurations = target.configuration.split(',').map((c) => c.trim());
+        const targetConfiguration = target.configuration || await this.workspaceHost.getDefaultConfigurationName(target.project, target.target);
+        if (targetConfiguration) {
+            const configurations = targetConfiguration.split(',').map((c) => c.trim());
             for (const configuration of configurations) {
                 options = {
                     ...options,
