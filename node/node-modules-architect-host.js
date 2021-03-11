@@ -8,7 +8,7 @@ function clone(obj) {
     try {
         return v8_1.deserialize(v8_1.serialize(obj));
     }
-    catch (_a) {
+    catch {
         return JSON.parse(JSON.stringify(obj));
     }
 }
