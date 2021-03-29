@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#b8d296a8f",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#aeebd14f0",
     "rxjs": "6.6.6"
   },
   "builders": "./builders/builders.json",
