@@ -127,13 +127,14 @@ class WorkspaceNodeModulesArchitectHost {
             return null;
         }
         let options = await this.workspaceHost.getOptions(target.project, target.target);
-        const targetConfiguration = target.configuration || await this.workspaceHost.getDefaultConfigurationName(target.project, target.target);
+        const targetConfiguration = target.configuration ||
+            (await this.workspaceHost.getDefaultConfigurationName(target.project, target.target));
         if (targetConfiguration) {
             const configurations = targetConfiguration.split(',').map((c) => c.trim());
             for (const configuration of configurations) {
                 options = {
                     ...options,
-                    ...await this.workspaceHost.getOptions(target.project, target.target, configuration),
+                    ...(await this.workspaceHost.getOptions(target.project, target.target, configuration)),
                 };
             }
         }

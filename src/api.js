@@ -63,7 +63,7 @@ function targetFromTargetString(str) {
     return {
         project: tuple[0],
         target: tuple[1],
-        ...(tuple[2] !== undefined) && { configuration: tuple[2] },
+        ...(tuple[2] !== undefined && { configuration: tuple[2] }),
     };
 }
 exports.targetFromTargetString = targetFromTargetString;
@@ -82,9 +82,9 @@ exports.targetFromTargetString = targetFromTargetString;
  */
 function scheduleTargetAndForget(context, target, overrides, scheduleOptions) {
     let resolve = null;
-    const promise = new Promise(r => resolve = r);
+    const promise = new Promise((r) => (resolve = r));
     context.addTeardown(() => promise);
-    return rxjs_1.from(context.scheduleTarget(target, overrides, scheduleOptions)).pipe(operators_1.switchMap(run => new rxjs_1.Observable(observer => {
+    return rxjs_1.from(context.scheduleTarget(target, overrides, scheduleOptions)).pipe(operators_1.switchMap((run) => new rxjs_1.Observable((observer) => {
         const subscription = run.output.subscribe(observer);
         return () => {
             subscription.unsubscribe();
