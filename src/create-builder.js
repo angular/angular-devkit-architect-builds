@@ -50,15 +50,14 @@ function createBuilder(fn) {
                 id: context.id,
             });
         }
-        return new rxjs_1.Observable(observer => {
+        return new rxjs_1.Observable((observer) => {
             const subscriptions = [];
-            const inputSubscription = context.inboundBus.subscribe(i => {
+            const inputSubscription = context.inboundBus.subscribe((i) => {
                 switch (i.kind) {
                     case core_1.experimental.jobs.JobInboundMessageKind.Stop:
                         // Run teardown logic then complete.
                         tearingDown = true;
-                        Promise.all(teardownLogics.map(fn => fn() || Promise.resolve()))
-                            .then(() => observer.complete(), err => observer.error(err));
+                        Promise.all(teardownLogics.map((fn) => fn() || Promise.resolve())).then(() => observer.complete(), (err) => observer.error(err));
                         break;
                     case core_1.experimental.jobs.JobInboundMessageKind.Input:
                         if (!tearingDown) {
@@ -73,7 +72,7 @@ function createBuilder(fn) {
                     ? api_1.targetStringFromTarget(i.target)
                     : builder.builderName;
                 const logger = new core_1.logging.Logger(loggerName);
-                subscriptions.push(logger.subscribe(entry => log(entry)));
+                subscriptions.push(logger.subscribe((entry) => log(entry)));
                 const context = {
                     builder,
                     workspaceRoot: i.workspaceRoot,
@@ -89,7 +88,7 @@ function createBuilder(fn) {
                             currentDirectory: i.currentDirectory,
                         });
                         // We don't want to subscribe errors and complete.
-                        subscriptions.push(run.progress.subscribe(event => progressChannel.next(event)));
+                        subscriptions.push(run.progress.subscribe((event) => progressChannel.next(event)));
                         return run;
                     },
                     async scheduleBuilder(builderName, options = {}, scheduleOptions = {}) {
@@ -101,20 +100,31 @@ function createBuilder(fn) {
                             currentDirectory: i.currentDirectory,
                         });
                         // We don't want to subscribe errors and complete.
-                        subscriptions.push(run.progress.subscribe(event => progressChannel.next(event)));
+                        subscriptions.push(run.progress.subscribe((event) => progressChannel.next(event)));
                         return run;
                     },
                     async getTargetOptions(target) {
-                        return scheduler.schedule('..getTargetOptions', target).output.toPromise();
+                        return scheduler
+                            .schedule('..getTargetOptions', target)
+                            .output.toPromise();
                     },
                     async getProjectMetadata(target) {
-                        return scheduler.schedule('..getProjectMetadata', target).output.toPromise();
+                        return scheduler
+                            .schedule('..getProjectMetadata', target)
+                            .output.toPromise();
                     },
                     async getBuilderNameForTarget(target) {
-                        return scheduler.schedule('..getBuilderNameForTarget', target).output.toPromise();
+                        return scheduler
+                            .schedule('..getBuilderNameForTarget', target)
+                            .output.toPromise();
                     },
                     async validateOptions(options, builderName) {
-                        return scheduler.schedule('..validateOptions', [builderName, options]).output.toPromise();
+                        return scheduler
+                            .schedule('..validateOptions', [
+                            builderName,
+                            options,
+                        ])
+                            .output.toPromise();
                     },
                     reportRunning() {
                         switch (currentState) {
@@ -140,7 +150,7 @@ function createBuilder(fn) {
                                 progress({ state: currentState, current, total, status }, context);
                         }
                     },
-                    analytics: new core_1.analytics.ForwardingAnalytics(report => analyticsChannel.next(report)),
+                    analytics: new core_1.analytics.ForwardingAnalytics((report) => analyticsChannel.next(report)),
                     addTeardown(teardown) {
                         teardownLogics.push(teardown);
                     },
@@ -164,13 +174,15 @@ function createBuilder(fn) {
                 }
                 // Manage some state automatically.
                 progress({ state: api_1.BuilderProgressState.Running, current: 0, total: 1 }, context);
-                subscriptions.push(result.pipe(operators_1.tap(() => {
+                subscriptions.push(result
+                    .pipe(operators_1.tap(() => {
                     progress({ state: api_1.BuilderProgressState.Running, current: total }, context);
                     progress({ state: api_1.BuilderProgressState.Stopped }, context);
-                })).subscribe(message => observer.next(message), error => observer.error(error), () => observer.complete()));
+                }))
+                    .subscribe((message) => observer.next(message), (error) => observer.error(error), () => observer.complete()));
             }
             return () => {
-                subscriptions.forEach(x => x.unsubscribe());
+                subscriptions.forEach((x) => x.unsubscribe());
                 inputSubscription.unsubscribe();
             };
         });

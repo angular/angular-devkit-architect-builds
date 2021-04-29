@@ -72,8 +72,8 @@ class TestingArchitectHost {
      * @returns All the info needed for the builder itself.
      */
     async resolveBuilder(builderName) {
-        return this._builderMap.get(builderName)
-            || (this._backendHost && this._backendHost.resolveBuilder(builderName));
+        return (this._builderMap.get(builderName) ||
+            (this._backendHost && this._backendHost.resolveBuilder(builderName)));
     }
     async getCurrentDirectory() {
         return this.currentDirectory;
@@ -93,8 +93,8 @@ class TestingArchitectHost {
         return this._backendHost && this._backendHost.getProjectMetadata(target);
     }
     async loadBuilder(info) {
-        return this._builderImportMap.get(info.builderName)
-            || (this._backendHost && this._backendHost.loadBuilder(info));
+        return (this._builderImportMap.get(info.builderName) ||
+            (this._backendHost && this._backendHost.loadBuilder(info)));
     }
 }
 exports.TestingArchitectHost = TestingArchitectHost;
