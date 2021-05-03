@@ -14,9 +14,10 @@ const operators_1 = require("rxjs/operators");
 const api_1 = require("./api");
 const internal_1 = require("./internal");
 const schedule_by_name_1 = require("./schedule-by-name");
-// tslint:disable-next-line: no-big-function
+// eslint-disable-next-line max-lines-per-function
 function createBuilder(fn) {
     const cjh = core_1.experimental.jobs.createJobHandler;
+    // eslint-disable-next-line max-lines-per-function
     const handler = cjh((options, context) => {
         const scheduler = context.scheduler;
         const progressChannel = context.createChannel('progress');

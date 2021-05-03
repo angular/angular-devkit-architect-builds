@@ -12,7 +12,7 @@ const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const progress_schema_1 = require("./progress-schema");
 Object.defineProperty(exports, "BuilderProgressState", { enumerable: true, get: function () { return progress_schema_1.State; } });
-// tslint:disable-next-line:no-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isBuilderOutput(obj) {
     if (!obj || typeof obj.then === 'function' || typeof obj.subscribe === 'function') {
         return false;
@@ -90,7 +90,7 @@ function scheduleTargetAndForget(context, target, overrides, scheduleOptions) {
             subscription.unsubscribe();
             // We can properly ignore the floating promise as it's a "reverse" promise; the teardown
             // is waiting for the resolve.
-            // tslint:disable-next-line:no-floating-promises
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             run.stop().then(resolve);
         };
     })));
