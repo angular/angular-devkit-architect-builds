@@ -9,7 +9,7 @@ import { analytics, experimental, json, logging } from '@angular-devkit/core';
 import { Observable, SubscribableOrPromise } from 'rxjs';
 import { Schema as RealBuilderInput, Target as RealTarget } from './input-schema';
 import { Schema as RealBuilderOutput } from './output-schema';
-import { Schema as RealBuilderProgress, State as BuilderProgressState } from './progress-schema';
+import { State as BuilderProgressState, Schema as RealBuilderProgress } from './progress-schema';
 export declare type Target = json.JsonObject & RealTarget;
 export { BuilderProgressState };
 export declare type BuilderRegistry = experimental.jobs.Registry<json.JsonObject, BuilderInput, BuilderOutput>;
