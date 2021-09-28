@@ -32,7 +32,7 @@ const v8_1 = require("v8");
 const internal_1 = require("../src/internal");
 function clone(obj) {
     try {
-        return v8_1.deserialize(v8_1.serialize(obj));
+        return (0, v8_1.deserialize)((0, v8_1.serialize)(obj));
     }
     catch {
         return JSON.parse(JSON.stringify(obj));
