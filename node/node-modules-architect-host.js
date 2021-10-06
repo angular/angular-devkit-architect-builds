@@ -81,6 +81,7 @@ class WorkspaceNodeModulesArchitectHost {
                         root: projectDefinition.root,
                         sourceRoot: projectDefinition.sourceRoot,
                         prefix: projectDefinition.prefix,
+                        ...clone(workspaceOrHost.extensions),
                         ...clone(projectDefinition.extensions),
                     };
                 },
