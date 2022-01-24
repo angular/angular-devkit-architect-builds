@@ -28,6 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WorkspaceNodeModulesArchitectHost = void 0;
 const path = __importStar(require("path"));
+const url_1 = require("url");
 const v8_1 = require("v8");
 const internal_1 = require("../src/internal");
 function clone(obj) {
@@ -166,7 +167,7 @@ class WorkspaceNodeModulesArchitectHost {
         return metadata;
     }
     async loadBuilder(info) {
-        const builder = (await Promise.resolve().then(() => __importStar(require(info.import)))).default;
+        const builder = await getBuilder(info.import);
         if (builder[internal_1.BuilderSymbol]) {
             return builder;
         }
@@ -178,3 +179,45 @@ class WorkspaceNodeModulesArchitectHost {
     }
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;
+/**
+ * This uses a dynamic import to load a module which may be ESM.
+ * CommonJS code can load ESM code via a dynamic import. Unfortunately, TypeScript
+ * will currently, unconditionally downlevel dynamic import into a require call.
+ * require calls cannot load ESM code and will result in a runtime error. To workaround
+ * this, a Function constructor is used to prevent TypeScript from changing the dynamic import.
+ * Once TypeScript provides support for keeping the dynamic import this workaround can
+ * be dropped.
+ *
+ * @param modulePath The path of the module to load.
+ * @returns A Promise that resolves to the dynamically imported module.
+ */
+function loadEsmModule(modulePath) {
+    return new Function('modulePath', `return import(modulePath);`)(modulePath);
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getBuilder(builderPath) {
+    switch (path.extname(builderPath)) {
+        case '.mjs':
+            // Load the ESM configuration file using the TypeScript dynamic import workaround.
+            // Once TypeScript provides support for keeping the dynamic import this workaround can be
+            // changed to a direct dynamic import.
+            return (await loadEsmModule((0, url_1.pathToFileURL)(builderPath))).default;
+        case '.cjs':
+            return require(builderPath);
+        default:
+            // The file could be either CommonJS or ESM.
+            // CommonJS is tried first then ESM if loading fails.
+            try {
+                return require(builderPath);
+            }
+            catch (e) {
+                if (e.code === 'ERR_REQUIRE_ESM') {
+                    // Load the ESM configuration file using the TypeScript dynamic import workaround.
+                    // Once TypeScript provides support for keeping the dynamic import this workaround can be
+                    // changed to a direct dynamic import.
+                    return (await loadEsmModule((0, url_1.pathToFileURL)(builderPath))).default;
+                }
+                throw e;
+            }
+    }
+}
