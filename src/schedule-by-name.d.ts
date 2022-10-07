@@ -5,19 +5,18 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { analytics, json, logging } from '@angular-devkit/core';
+import { analytics, experimental, json, logging } from '@angular-devkit/core';
 import { BuilderRun, Target } from './api';
-import { Scheduler } from './jobs';
 export declare function scheduleByName(name: string, buildOptions: json.JsonObject, options: {
     target?: Target;
-    scheduler: Scheduler;
+    scheduler: experimental.jobs.Scheduler;
     logger: logging.LoggerApi;
     workspaceRoot: string | Promise<string>;
     currentDirectory: string | Promise<string>;
     analytics?: analytics.Analytics;
 }): Promise<BuilderRun>;
 export declare function scheduleByTarget(target: Target, overrides: json.JsonObject, options: {
-    scheduler: Scheduler;
+    scheduler: experimental.jobs.Scheduler;
     logger: logging.LoggerApi;
     workspaceRoot: string | Promise<string>;
     currentDirectory: string | Promise<string>;
