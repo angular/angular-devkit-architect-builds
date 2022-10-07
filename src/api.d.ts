@@ -5,14 +5,15 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { analytics, experimental, json, logging } from '@angular-devkit/core';
+import { analytics, json, logging } from '@angular-devkit/core';
 import { Observable, SubscribableOrPromise } from 'rxjs';
 import { Schema as RealBuilderInput, Target as RealTarget } from './input-schema';
+import { Registry } from './jobs';
 import { Schema as RealBuilderOutput } from './output-schema';
 import { State as BuilderProgressState, Schema as RealBuilderProgress } from './progress-schema';
 export declare type Target = json.JsonObject & RealTarget;
 export { BuilderProgressState };
-export declare type BuilderRegistry = experimental.jobs.Registry<json.JsonObject, BuilderInput, BuilderOutput>;
+export declare type BuilderRegistry = Registry<json.JsonObject, BuilderInput, BuilderOutput>;
 /**
  * An API typed BuilderProgress. The interface generated from the schema is too permissive,
  * so this API is the one we show in our API. Please note that not all fields are in there; this
