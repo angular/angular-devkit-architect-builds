@@ -5,14 +5,13 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.io/license
  */
-import { analytics, json, logging } from '@angular-devkit/core';
+import { json, logging } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
 import { BuilderRun, Target } from './api';
 import { ArchitectHost } from './internal';
 import { JobName, Registry } from './jobs';
 export interface ScheduleOptions {
     logger?: logging.Logger;
-    analytics?: analytics.Analytics;
 }
 export declare class Architect {
     private _host;
