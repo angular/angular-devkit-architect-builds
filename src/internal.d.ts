@@ -26,7 +26,7 @@ export declare const BuilderVersionSymbol: unique symbol;
  * A Specialization of the JobHandler type. This exposes BuilderDescription as the job description
  * type.
  */
-export declare type BuilderJobHandler<A extends json.JsonObject = json.JsonObject, I extends BuilderInput = BuilderInput, O extends BuilderOutput = BuilderOutput> = JobHandler<A, I, O> & {
+export type BuilderJobHandler<A extends json.JsonObject = json.JsonObject, I extends BuilderInput = BuilderInput, O extends BuilderOutput = BuilderOutput> = JobHandler<A, I, O> & {
     jobDescription: BuilderDescription;
 };
 /**

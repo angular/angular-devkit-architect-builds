@@ -24,7 +24,7 @@ export interface SimpleJobHandlerContext<A extends JsonValue, I extends JsonValu
  * scheduler and registry. For example, instead of returning a JobOutboundMessage observable, you
  * can directly return an output.
  */
-export declare type SimpleJobHandlerFn<A extends JsonValue, I extends JsonValue, O extends JsonValue> = (input: A, context: SimpleJobHandlerContext<A, I, O>) => O | Promise<O> | Observable<O>;
+export type SimpleJobHandlerFn<A extends JsonValue, I extends JsonValue, O extends JsonValue> = (input: A, context: SimpleJobHandlerContext<A, I, O>) => O | Promise<O> | Observable<O>;
 /**
  * Make a simple job handler that sets start and end from a function that's synchronous.
  *

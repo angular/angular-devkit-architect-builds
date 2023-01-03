@@ -9,7 +9,7 @@ import { json, workspaces } from '@angular-devkit/core';
 import { BuilderInfo } from '../src';
 import { Target } from '../src/input-schema';
 import { ArchitectHost, Builder } from '../src/internal';
-export declare type NodeModulesBuilderInfo = BuilderInfo & {
+export type NodeModulesBuilderInfo = BuilderInfo & {
     import: string;
 };
 export interface WorkspaceHost {

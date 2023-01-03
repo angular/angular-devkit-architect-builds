@@ -11,7 +11,7 @@ import { DeepReadonly } from './types';
 /**
  * A job name is just a string (needs to be serializable).
  */
-export declare type JobName = string;
+export type JobName = string;
 /**
  * The job handler function, which is a method that's executed for the job.
  */
@@ -82,7 +82,7 @@ export interface JobInboundMessageInput<InputT extends JsonValue> extends JobInb
      */
     readonly value: InputT;
 }
-export declare type JobInboundMessage<InputT extends JsonValue> = JobInboundMessagePing | JobInboundMessageStop | JobInboundMessageInput<InputT>;
+export type JobInboundMessage<InputT extends JsonValue> = JobInboundMessagePing | JobInboundMessageStop | JobInboundMessageInput<InputT>;
 /**
  * Kind of messages that can be outputted from a job.
  */
@@ -196,7 +196,7 @@ export interface JobOutboundMessagePong extends JobOutboundMessageBase {
 /**
  * Generic message type.
  */
-export declare type JobOutboundMessage<OutputT extends JsonValue> = JobOutboundMessageOnReady | JobOutboundMessageStart | JobOutboundMessageOutput<OutputT> | JobOutboundMessageChannelCreate | JobOutboundMessageChannelMessage | JobOutboundMessageChannelError | JobOutboundMessageChannelComplete | JobOutboundMessageEnd | JobOutboundMessagePong;
+export type JobOutboundMessage<OutputT extends JsonValue> = JobOutboundMessageOnReady | JobOutboundMessageStart | JobOutboundMessageOutput<OutputT> | JobOutboundMessageChannelCreate | JobOutboundMessageChannelMessage | JobOutboundMessageChannelError | JobOutboundMessageChannelComplete | JobOutboundMessageEnd | JobOutboundMessagePong;
 /**
  * The state of a job. These are changed as the job reports a new state through its messages.
  */
