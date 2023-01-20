@@ -6,6 +6,7 @@ export interface Schema {
     builders: {
         [key: string]: Builder;
     };
+    [property: string]: any;
 }
 /**
  * Target options for Builders.
@@ -27,4 +28,5 @@ export interface Builder {
      * Schema for builder option validation.
      */
     schema: string;
+    [property: string]: any;
 }
