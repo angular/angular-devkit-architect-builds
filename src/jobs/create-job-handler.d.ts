@@ -18,6 +18,7 @@ export declare class ChannelAlreadyExistException extends BaseException {
 export interface SimpleJobHandlerContext<A extends JsonValue, I extends JsonValue, O extends JsonValue> extends JobHandlerContext<A, I, O> {
     createChannel: (name: string) => Observer<JsonValue>;
     input: Observable<I>;
+    addTeardown(teardown: () => Promise<void> | void): void;
 }
 /**
  * A simple version of the JobHandler. This simplifies a lot of the interaction with the job
