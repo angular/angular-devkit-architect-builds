@@ -30,7 +30,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WorkspaceNodeModulesArchitectHost = void 0;
+exports.loadEsmModule = exports.WorkspaceNodeModulesArchitectHost = void 0;
 const path = __importStar(require("path"));
 const url_1 = require("url");
 const v8_1 = require("v8");
@@ -183,6 +183,10 @@ class WorkspaceNodeModulesArchitectHost {
 }
 exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;
 /**
+ * Lazily compiled dynamic import loader function.
+ */
+let load;
+/**
  * This uses a dynamic import to load a module which may be ESM.
  * CommonJS code can load ESM code via a dynamic import. Unfortunately, TypeScript
  * will currently, unconditionally downlevel dynamic import into a require call.
@@ -195,8 +199,10 @@ exports.WorkspaceNodeModulesArchitectHost = WorkspaceNodeModulesArchitectHost;
  * @returns A Promise that resolves to the dynamically imported module.
  */
 function loadEsmModule(modulePath) {
-    return new Function('modulePath', `return import(modulePath);`)(modulePath);
+    load ??= new Function('modulePath', `return import(modulePath);`);
+    return load(modulePath);
 }
+exports.loadEsmModule = loadEsmModule;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getBuilder(builderPath) {
     switch (path.extname(builderPath)) {
