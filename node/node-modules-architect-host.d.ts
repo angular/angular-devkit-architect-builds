@@ -6,6 +6,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 /// <reference types="node" />
+/// <reference types="@types/node/url" />
+/// <reference types="@types/node/ts4.8/url" />
 import { json, workspaces } from '@angular-devkit/core';
 import { URL } from 'url';
 import { BuilderInfo } from '../src';
