@@ -51,16 +51,17 @@ function targetStringFromTarget({ project, target, configuration }) {
 }
 exports.targetStringFromTarget = targetStringFromTarget;
 /**
- * Return a Target tuple from a string.
+ * Return a Target tuple from a specifier string.
+ * Supports abbreviated target specifiers (examples: `::`, `::development`, or `:build:production`).
  */
-function targetFromTargetString(str) {
-    const tuple = str.split(/:/, 3);
+function targetFromTargetString(specifier, abbreviatedProjectName, abbreviatedTargetName) {
+    const tuple = specifier.split(':', 3);
     if (tuple.length < 2) {
-        throw new Error('Invalid target string: ' + JSON.stringify(str));
+        throw new Error('Invalid target string: ' + JSON.stringify(specifier));
     }
     return {
-        project: tuple[0],
-        target: tuple[1],
+        project: tuple[0] || abbreviatedProjectName || '',
+        target: tuple[1] || abbreviatedTargetName || '',
         ...(tuple[2] !== undefined && { configuration: tuple[2] }),
     };
 }

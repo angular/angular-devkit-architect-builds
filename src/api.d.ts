@@ -249,9 +249,10 @@ export type BuilderInfo = json.JsonObject & {
  */
 export declare function targetStringFromTarget({ project, target, configuration }: Target): string;
 /**
- * Return a Target tuple from a string.
+ * Return a Target tuple from a specifier string.
+ * Supports abbreviated target specifiers (examples: `::`, `::development`, or `:build:production`).
  */
-export declare function targetFromTargetString(str: string): Target;
+export declare function targetFromTargetString(specifier: string, abbreviatedProjectName?: string, abbreviatedTargetName?: string): Target;
 /**
  * Schedule a target, and forget about its run. This will return an observable of outputs, that
  * as a teardown will stop the target from running. This means that the Run object this returns
