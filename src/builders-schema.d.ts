@@ -4,10 +4,11 @@ export interface Schema {
      */
     $schema?: string;
     builders: {
-        [key: string]: Builder;
+        [key: string]: BuilderValue;
     };
     [property: string]: any;
 }
+export type BuilderValue = Builder | string;
 /**
  * Target options for Builders.
  */

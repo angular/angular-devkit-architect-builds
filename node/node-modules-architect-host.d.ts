@@ -7,7 +7,6 @@
  */
 /// <reference types="node" />
 import { json, workspaces } from '@angular-devkit/core';
-import { URL } from 'url';
 import { BuilderInfo } from '../src';
 import { Target } from '../src/input-schema';
 import { ArchitectHost, Builder } from '../src/internal';
@@ -34,7 +33,7 @@ export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<
      * @param builderStr The name of the builder to be used.
      * @returns All the info needed for the builder itself.
      */
-    resolveBuilder(builderStr: string): Promise<NodeModulesBuilderInfo>;
+    resolveBuilder(builderStr: string, seenBuilders?: Set<string>): Promise<NodeModulesBuilderInfo>;
     getCurrentDirectory(): Promise<string>;
     getWorkspaceRoot(): Promise<string>;
     getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;

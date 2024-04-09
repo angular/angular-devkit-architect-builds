@@ -31,13 +31,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadEsmModule = exports.WorkspaceNodeModulesArchitectHost = void 0;
-const path = __importStar(require("path"));
-const url_1 = require("url");
-const v8_1 = require("v8");
+const node_fs_1 = require("node:fs");
+const node_module_1 = require("node:module");
+const path = __importStar(require("node:path"));
+const node_url_1 = require("node:url");
+const node_v8_1 = require("node:v8");
 const internal_1 = require("../src/internal");
+// TODO_ESM: Update to use import.meta.url
+const localRequire = (0, node_module_1.createRequire)(__filename);
 function clone(obj) {
     try {
-        return (0, v8_1.deserialize)((0, v8_1.serialize)(obj));
+        return (0, node_v8_1.deserialize)((0, node_v8_1.serialize)(obj));
     }
     catch {
         return JSON.parse(JSON.stringify(obj));
@@ -110,34 +114,62 @@ class WorkspaceNodeModulesArchitectHost {
      * @param builderStr The name of the builder to be used.
      * @returns All the info needed for the builder itself.
      */
-    resolveBuilder(builderStr) {
+    resolveBuilder(builderStr, seenBuilders) {
+        if (seenBuilders?.has(builderStr)) {
+            throw new Error('Circular builder alias references detected: ' + [...seenBuilders, builderStr]);
+        }
         const [packageName, builderName] = builderStr.split(':', 2);
         if (!builderName) {
             throw new Error('No builder name specified.');
         }
-        const packageJsonPath = require.resolve(packageName + '/package.json', {
+        // Resolve and load the builders manifest from the package's `builders` field, if present
+        const packageJsonPath = localRequire.resolve(packageName + '/package.json', {
             paths: [this._root],
         });
-        const packageJson = require(packageJsonPath);
-        if (!packageJson['builders']) {
+        const packageJson = JSON.parse((0, node_fs_1.readFileSync)(packageJsonPath, 'utf-8'));
+        const buildersManifestRawPath = packageJson['builders'];
+        if (!buildersManifestRawPath) {
             throw new Error(`Package ${JSON.stringify(packageName)} has no builders defined.`);
         }
-        const builderJsonPath = path.resolve(path.dirname(packageJsonPath), packageJson['builders']);
-        const builderJson = require(builderJsonPath);
-        const builder = builderJson.builders && builderJson.builders[builderName];
+        let buildersManifestPath = path.normalize(buildersManifestRawPath);
+        if (path.isAbsolute(buildersManifestRawPath) || buildersManifestRawPath.startsWith('..')) {
+            throw new Error(`Package "${packageName}" has an invalid builders manifest path: "${buildersManifestRawPath}"`);
+        }
+        buildersManifestPath = path.join(path.dirname(packageJsonPath), buildersManifestPath);
+        const buildersManifest = JSON.parse((0, node_fs_1.readFileSync)(buildersManifestPath, 'utf-8'));
+        const buildersManifestDirectory = path.dirname(buildersManifestPath);
+        // Attempt to locate an entry for the specified builder by name
+        const builder = buildersManifest.builders?.[builderName];
         if (!builder) {
             throw new Error(`Cannot find builder ${JSON.stringify(builderStr)}.`);
         }
-        const importPath = builder.implementation;
-        if (!importPath) {
+        // Resolve alias reference if entry is a string
+        if (typeof builder === 'string') {
+            return this.resolveBuilder(builder, (seenBuilders ?? new Set()).add(builderStr));
+        }
+        // Determine builder implementation path (relative within package only)
+        const implementationPath = builder.implementation && path.normalize(builder.implementation);
+        if (!implementationPath) {
             throw new Error('Could not find the implementation for builder ' + builderStr);
         }
+        if (path.isAbsolute(implementationPath) || implementationPath.startsWith('..')) {
+            throw new Error(`Package "${packageName}" has an invalid builder implementation path: "${builderName}" --> "${builder.implementation}"`);
+        }
+        // Determine builder option schema path (relative within package only)
+        const schemaPath = builder.schema && path.normalize(builder.schema);
+        if (!schemaPath) {
+            throw new Error('Could not find the schema for builder ' + builderStr);
+        }
+        if (path.isAbsolute(schemaPath) || schemaPath.startsWith('..')) {
+            throw new Error(`Package "${packageName}" has an invalid builder implementation path: "${builderName}" --> "${builder.schema}"`);
+        }
+        const schemaText = (0, node_fs_1.readFileSync)(path.join(buildersManifestDirectory, schemaPath), 'utf-8');
         return Promise.resolve({
             name: builderStr,
             builderName,
             description: builder['description'],
-            optionSchema: require(path.resolve(path.dirname(builderJsonPath), builder.schema)),
-            import: path.resolve(path.dirname(builderJsonPath), importPath),
+            optionSchema: JSON.parse(schemaText),
+            import: path.join(buildersManifestDirectory, implementationPath),
         });
     }
     async getCurrentDirectory() {
@@ -210,21 +242,21 @@ async function getBuilder(builderPath) {
             // Load the ESM configuration file using the TypeScript dynamic import workaround.
             // Once TypeScript provides support for keeping the dynamic import this workaround can be
             // changed to a direct dynamic import.
-            return (await loadEsmModule((0, url_1.pathToFileURL)(builderPath))).default;
+            return (await loadEsmModule((0, node_url_1.pathToFileURL)(builderPath))).default;
         case '.cjs':
-            return require(builderPath);
+            return localRequire(builderPath);
         default:
             // The file could be either CommonJS or ESM.
             // CommonJS is tried first then ESM if loading fails.
             try {
-                return require(builderPath);
+                return localRequire(builderPath);
             }
             catch (e) {
                 if (e.code === 'ERR_REQUIRE_ESM') {
                     // Load the ESM configuration file using the TypeScript dynamic import workaround.
                     // Once TypeScript provides support for keeping the dynamic import this workaround can be
                     // changed to a direct dynamic import.
-                    return (await loadEsmModule((0, url_1.pathToFileURL)(builderPath))).default;
+                    return (await loadEsmModule((0, node_url_1.pathToFileURL)(builderPath))).default;
                 }
                 throw e;
             }
