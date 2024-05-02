@@ -33,7 +33,7 @@ export declare class WorkspaceNodeModulesArchitectHost implements ArchitectHost<
      * @param builderStr The name of the builder to be used.
      * @returns All the info needed for the builder itself.
      */
-    resolveBuilder(builderStr: string, seenBuilders?: Set<string>): Promise<NodeModulesBuilderInfo>;
+    resolveBuilder(builderStr: string, basePath?: string, seenBuilders?: Set<string>): Promise<NodeModulesBuilderInfo>;
     getCurrentDirectory(): Promise<string>;
     getWorkspaceRoot(): Promise<string>;
     getOptionsForTarget(target: Target): Promise<json.JsonObject | null>;
