@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDispatcher = void 0;
+exports.createDispatcher = createDispatcher;
 const api_1 = require("./api");
 const exception_1 = require("./exception");
 /**
@@ -47,4 +47,3 @@ function createDispatcher(options = {}) {
         // TODO: Remove return-only generic from createDispatcher() API.
     });
 }
-exports.createDispatcher = createDispatcher;

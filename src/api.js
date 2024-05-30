@@ -7,7 +7,12 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleTargetAndForget = exports.targetFromTargetString = exports.targetStringFromTarget = exports.fromAsyncIterable = exports.isBuilderOutput = exports.BuilderProgressState = void 0;
+exports.BuilderProgressState = void 0;
+exports.isBuilderOutput = isBuilderOutput;
+exports.fromAsyncIterable = fromAsyncIterable;
+exports.targetStringFromTarget = targetStringFromTarget;
+exports.targetFromTargetString = targetFromTargetString;
+exports.scheduleTargetAndForget = scheduleTargetAndForget;
 const rxjs_1 = require("rxjs");
 const progress_schema_1 = require("./progress-schema");
 Object.defineProperty(exports, "BuilderProgressState", { enumerable: true, get: function () { return progress_schema_1.State; } });
@@ -21,13 +26,11 @@ function isBuilderOutput(obj) {
     }
     return typeof obj.success === 'boolean';
 }
-exports.isBuilderOutput = isBuilderOutput;
 function fromAsyncIterable(iterable) {
     return new rxjs_1.Observable((subscriber) => {
         handleAsyncIterator(subscriber, iterable[Symbol.asyncIterator]()).then(() => subscriber.complete(), (error) => subscriber.error(error));
     });
 }
-exports.fromAsyncIterable = fromAsyncIterable;
 async function handleAsyncIterator(subscriber, iterator) {
     const teardown = new Promise((resolve) => subscriber.add(() => resolve()));
     try {
@@ -49,7 +52,6 @@ async function handleAsyncIterator(subscriber, iterator) {
 function targetStringFromTarget({ project, target, configuration }) {
     return `${project}:${target}${configuration !== undefined ? ':' + configuration : ''}`;
 }
-exports.targetStringFromTarget = targetStringFromTarget;
 /**
  * Return a Target tuple from a specifier string.
  * Supports abbreviated target specifiers (examples: `::`, `::development`, or `:build:production`).
@@ -65,7 +67,6 @@ function targetFromTargetString(specifier, abbreviatedProjectName, abbreviatedTa
         ...(tuple[2] !== undefined && { configuration: tuple[2] }),
     };
 }
-exports.targetFromTargetString = targetFromTargetString;
 /**
  * Schedule a target, and forget about its run. This will return an observable of outputs, that
  * as a teardown will stop the target from running. This means that the Run object this returns
@@ -94,4 +95,3 @@ function scheduleTargetAndForget(context, target, overrides, scheduleOptions) {
         };
     })));
 }
-exports.scheduleTargetAndForget = scheduleTargetAndForget;

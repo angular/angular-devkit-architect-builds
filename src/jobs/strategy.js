@@ -7,7 +7,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.memoize = exports.reuse = exports.serialize = void 0;
+exports.serialize = serialize;
+exports.reuse = reuse;
+exports.memoize = memoize;
 const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
 const api_1 = require("./api");
@@ -27,7 +29,6 @@ function serialize() {
         });
     };
 }
-exports.serialize = serialize;
 /**
  * Creates a JobStrategy that will always reuse a running job, and restart it if the job ended.
  * @param replayMessages Replay ALL messages if a job is reused, otherwise just hook up where it
@@ -62,7 +63,6 @@ function reuse(replayMessages = false) {
         return Object.assign(newHandler, handler, options || {});
     };
 }
-exports.reuse = reuse;
 /**
  * Creates a JobStrategy that will reuse a running job if the argument matches.
  * @param replayMessages Replay ALL messages if a job is reused, otherwise just hook up where it
@@ -91,4 +91,3 @@ function memoize(replayMessages = false) {
         return Object.assign(newHandler, handler, options || {});
     };
 }
-exports.memoize = memoize;

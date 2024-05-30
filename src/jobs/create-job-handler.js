@@ -7,7 +7,10 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createLoggerJob = exports.createJobFactory = exports.createJobHandler = exports.ChannelAlreadyExistException = void 0;
+exports.ChannelAlreadyExistException = void 0;
+exports.createJobHandler = createJobHandler;
+exports.createJobFactory = createJobFactory;
+exports.createLoggerJob = createLoggerJob;
 const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
 const api_1 = require("./api");
@@ -116,7 +119,6 @@ function createJobHandler(fn, options = {}) {
     };
     return Object.assign(handler, { jobDescription: options });
 }
-exports.createJobHandler = createJobHandler;
 /**
  * Lazily create a job using a function.
  * @param loader A factory function that returns a promise/observable of a JobHandler.
@@ -128,7 +130,6 @@ function createJobFactory(loader, options = {}) {
     };
     return Object.assign(handler, { jobDescription: options });
 }
-exports.createJobFactory = createJobFactory;
 /**
  * Creates a job that logs out input/output messages of another Job. The messages are still
  * propagated to the other job.
@@ -142,4 +143,3 @@ function createLoggerJob(job, logger) {
     };
     return Object.assign(handler, job);
 }
-exports.createLoggerJob = createLoggerJob;

@@ -7,7 +7,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isJobHandler = exports.JobState = exports.JobOutboundMessageKind = exports.JobInboundMessageKind = void 0;
+exports.JobState = exports.JobOutboundMessageKind = exports.JobInboundMessageKind = void 0;
+exports.isJobHandler = isJobHandler;
 /**
  * Messages that can be sent TO a job. The job needs to listen to those.
  */
@@ -70,4 +71,3 @@ function isJobHandler(value) {
     const job = value;
     return (typeof job == 'function' && typeof job.jobDescription == 'object' && job.jobDescription !== null);
 }
-exports.isJobHandler = isJobHandler;

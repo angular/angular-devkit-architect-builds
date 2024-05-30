@@ -7,7 +7,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createBuilder = void 0;
+exports.createBuilder = createBuilder;
 const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
 const api_1 = require("./api");
@@ -175,7 +175,6 @@ function createBuilder(fn) {
         [internal_1.BuilderVersionSymbol]: require('../package.json').version,
     };
 }
-exports.createBuilder = createBuilder;
 function isAsyncIterable(obj) {
     return !!obj && typeof obj[Symbol.asyncIterator] === 'function';
 }

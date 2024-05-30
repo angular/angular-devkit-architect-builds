@@ -30,7 +30,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadEsmModule = exports.WorkspaceNodeModulesArchitectHost = void 0;
+exports.WorkspaceNodeModulesArchitectHost = void 0;
+exports.loadEsmModule = loadEsmModule;
 const node_fs_1 = require("node:fs");
 const node_module_1 = require("node:module");
 const path = __importStar(require("node:path"));
@@ -234,7 +235,6 @@ function loadEsmModule(modulePath) {
     load ??= new Function('modulePath', `return import(modulePath);`);
     return load(modulePath);
 }
-exports.loadEsmModule = loadEsmModule;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getBuilder(builderPath) {
     switch (path.extname(builderPath)) {

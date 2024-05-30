@@ -7,7 +7,8 @@
  * found in the LICENSE file at https://angular.io/license
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.scheduleByTarget = exports.scheduleByName = void 0;
+exports.scheduleByName = scheduleByName;
+exports.scheduleByTarget = scheduleByTarget;
 const rxjs_1 = require("rxjs");
 const api_1 = require("./api");
 const jobs_1 = require("./jobs");
@@ -90,7 +91,6 @@ async function scheduleByName(name, buildOptions, options) {
         },
     };
 }
-exports.scheduleByName = scheduleByName;
 async function scheduleByTarget(target, overrides, options) {
     return scheduleByName(`{${(0, api_1.targetStringFromTarget)(target)}}`, overrides, {
         ...options,
@@ -98,4 +98,3 @@ async function scheduleByTarget(target, overrides, options) {
         logger: options.logger,
     });
 }
-exports.scheduleByTarget = scheduleByTarget;
