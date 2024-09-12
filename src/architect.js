@@ -12,6 +12,7 @@ const core_1 = require("@angular-devkit/core");
 const rxjs_1 = require("rxjs");
 const api_1 = require("./api");
 const jobs_1 = require("./jobs");
+const options_1 = require("./options");
 const schedule_by_name_1 = require("./schedule-by-name");
 const inputSchema = require('./input-schema.json');
 const outputSchema = require('./output-schema.json');
@@ -28,10 +29,7 @@ function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOpti
         const inboundBusWithInputValidation = context.inboundBus.pipe((0, rxjs_1.concatMap)(async (message) => {
             if (message.kind === jobs_1.JobInboundMessageKind.Input) {
                 const v = message.value;
-                const options = {
-                    ...baseOptions,
-                    ...v.options,
-                };
+                const options = (0, options_1.mergeOptions)(baseOptions, v.options);
                 // Validate v against the options schema.
                 const validation = await registry.compile(info.optionSchema);
                 const validationResult = await validation(options);
