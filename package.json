@@ -1,12 +1,12 @@
 {
   "name": "@angular-devkit/architect",
-  "version": "0.1900.5+sha-2f4df6b",
+  "version": "0.1900.5+sha-8907541",
   "description": "Angular Build Facade",
   "experimental": true,
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#2f4df6b",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#8907541",
     "rxjs": "7.8.1"
   },
   "builders": "./builders/builders.json",
@@ -17,7 +17,6 @@
     "devkit",
     "sdk"
   ],
-  "packageManager": "yarn@4.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/angular/angular-cli.git"
@@ -40,5 +39,8 @@
     "puppeteer": {
       "built": true
     }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": []
   }
 }
