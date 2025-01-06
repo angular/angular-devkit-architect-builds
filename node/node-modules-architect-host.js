@@ -57,6 +57,9 @@ function findProjectTarget(workspace, project, target) {
     if (!targetDefinition) {
         throw new Error('Project target does not exist.');
     }
+    if (!targetDefinition.builder) {
+        throw new Error(`A builder is not set for target '${target}' in project '${project}'.`);
+    }
     return targetDefinition;
 }
 class WorkspaceNodeModulesArchitectHost {
@@ -70,8 +73,8 @@ class WorkspaceNodeModulesArchitectHost {
         else {
             this.workspaceHost = {
                 async getBuilderName(project, target) {
-                    const targetDefinition = findProjectTarget(workspaceOrHost, project, target);
-                    return targetDefinition.builder;
+                    const { builder } = findProjectTarget(workspaceOrHost, project, target);
+                    return builder;
                 },
                 async getOptions(project, target, configuration) {
                     const targetDefinition = findProjectTarget(workspaceOrHost, project, target);
