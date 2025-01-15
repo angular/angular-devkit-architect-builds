@@ -173,6 +173,9 @@ function createBuilder(fn) {
         handler,
         [internal_1.BuilderSymbol]: true,
         [internal_1.BuilderVersionSymbol]: require('../package.json').version,
+        // Only needed for type safety around `Builder` types.
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        __OptionT: null,
     };
 }
 function isAsyncIterable(obj) {

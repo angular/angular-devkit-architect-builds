@@ -8,4 +8,5 @@
 import { json } from '@angular-devkit/core';
 import { BuilderHandlerFn, BuilderOutput } from './api';
 import { Builder } from './internal';
+export type { Builder };
 export declare function createBuilder<OptT = json.JsonObject, OutT extends BuilderOutput = BuilderOutput>(fn: BuilderHandlerFn<OptT>): Builder<OptT & json.JsonObject>;

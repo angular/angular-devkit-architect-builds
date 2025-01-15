@@ -5,5 +5,5 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.dev/license
  */
-declare const _default: import("../src/internal").Builder<import("../../core").JsonObject>;
+declare const _default: import("../src").Builder<import("@angular-devkit/core").JsonObject>;
 export default _default;

@@ -43,6 +43,7 @@ export interface Builder<OptionT extends json.JsonObject = json.JsonObject> {
     handler: JobHandler<json.JsonObject, BuilderInput, BuilderOutput>;
     [BuilderSymbol]: true;
     [BuilderVersionSymbol]: string;
+    __OptionT: OptionT;
 }
 export interface ArchitectHost<BuilderInfoT extends BuilderInfo = BuilderInfo> {
     /**
