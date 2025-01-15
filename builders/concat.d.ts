@@ -7,5 +7,5 @@
  */
 import { json } from '@angular-devkit/core';
 import { Schema as OperatorSchema } from './operator-schema';
-declare const _default: import("../src/internal").Builder<json.JsonObject & OperatorSchema>;
+declare const _default: import("../src").Builder<json.JsonObject & OperatorSchema>;
 export default _default;
