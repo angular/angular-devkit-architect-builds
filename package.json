@@ -1,12 +1,12 @@
 {
   "name": "@angular-devkit/architect",
-  "version": "0.1902.0-next.0+sha-3861b88",
+  "version": "0.1902.0-next.0+sha-c37b59e",
   "description": "Angular Build Facade",
   "experimental": true,
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#3861b88",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#c37b59e",
     "rxjs": "7.8.1"
   },
   "builders": "./builders/builders.json",
@@ -31,16 +31,5 @@
   "bugs": {
     "url": "https://github.com/angular/angular-cli/issues"
   },
-  "homepage": "https://github.com/angular/angular-cli",
-  "dependenciesMeta": {
-    "esbuild": {
-      "built": true
-    },
-    "puppeteer": {
-      "built": true
-    }
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": []
-  }
+  "homepage": "https://github.com/angular/angular-cli"
 }
