@@ -1,4 +1,4 @@
-export interface Schema {
+export type Schema = {
     builder: {
         [key: string]: any;
     };
@@ -12,7 +12,7 @@ export interface Schema {
     };
     total?: number;
     [property: string]: any;
-}
+};
 export declare enum State {
     Error = "error",
     Running = "running",

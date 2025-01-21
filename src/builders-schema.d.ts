@@ -1,4 +1,4 @@
-export interface Schema {
+export type Schema = {
     /**
      * Link to schema.
      */
@@ -7,12 +7,12 @@ export interface Schema {
         [key: string]: BuilderValue;
     };
     [property: string]: any;
-}
+};
 export type BuilderValue = Builder | string;
 /**
  * Target options for Builders.
  */
-export interface Builder {
+export type Builder = {
     /**
      * The builder class module.
      */
@@ -30,4 +30,4 @@ export interface Builder {
      */
     schema: string;
     [property: string]: any;
-}
+};

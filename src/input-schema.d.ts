@@ -1,4 +1,4 @@
-export interface Schema {
+export type Schema = {
     currentDirectory: string;
     id: number;
     info: {
@@ -10,10 +10,10 @@ export interface Schema {
     target?: Target;
     workspaceRoot: string;
     [property: string]: any;
-}
-export interface Target {
+};
+export type Target = {
     configuration?: string;
     project: string;
     target: string;
     [property: string]: any;
-}
+};

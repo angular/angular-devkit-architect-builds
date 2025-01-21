@@ -1,4 +1,4 @@
-export interface Schema {
+export type Schema = {
     error?: string;
     info?: {
         [key: string]: any;
@@ -6,10 +6,10 @@ export interface Schema {
     success: boolean;
     target?: Target;
     [property: string]: any;
-}
-export interface Target {
+};
+export type Target = {
     configuration?: string;
     project?: string;
     target?: string;
     [property: string]: any;
-}
+};
