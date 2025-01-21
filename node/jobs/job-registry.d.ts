@@ -5,9 +5,9 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.dev/license
  */
-import { jobs } from '@angular-devkit/architect';
 import { JsonValue } from '@angular-devkit/core';
 import { Observable } from 'rxjs';
+import { jobs } from '../../src';
 export declare class NodeModuleJobRegistry<MinimumArgumentValueT extends JsonValue = JsonValue, MinimumInputValueT extends JsonValue = JsonValue, MinimumOutputValueT extends JsonValue = JsonValue> implements jobs.Registry<MinimumArgumentValueT, MinimumInputValueT, MinimumOutputValueT> {
     protected _resolve(name: string): string | null;
     /**
