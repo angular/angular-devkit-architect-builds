@@ -7,7 +7,7 @@
  */
 import { Path, PathFragment, virtualFs } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
-import { Stats } from 'fs';
+import { Stats } from 'node:fs';
 import { Observable } from 'rxjs';
 /**
  * @deprecated
