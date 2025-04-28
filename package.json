@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/architect",
-  "version": "0.1902.9+sha-2a25652",
+  "version": "0.1902.9+sha-65dc5a5",
   "description": "Angular Build Facade",
   "experimental": true,
   "main": "src/index.js",
