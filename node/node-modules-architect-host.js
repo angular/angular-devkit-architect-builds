@@ -273,7 +273,8 @@ async function getBuilder(builderPath) {
                 return localRequire(builderPath);
             }
             catch (e) {
-                if (e.code === 'ERR_REQUIRE_ESM') {
+                if (e.code === 'ERR_REQUIRE_ESM' ||
+                    e.code === 'ERR_REQUIRE_ASYNC_MODULE') {
                     // Load the ESM configuration file using the TypeScript dynamic import workaround.
                     // Once TypeScript provides support for keeping the dynamic import this workaround can be
                     // changed to a direct dynamic import.
