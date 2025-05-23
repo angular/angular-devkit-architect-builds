@@ -14,14 +14,12 @@ const api_1 = require("./api");
 const jobs_1 = require("./jobs");
 const options_1 = require("./options");
 const schedule_by_name_1 = require("./schedule-by-name");
-const inputSchema = require('./input-schema.json');
-const outputSchema = require('./output-schema.json');
 function _createJobHandlerFromBuilderInfo(info, target, host, registry, baseOptions) {
     const jobDescription = {
         name: target ? `{${(0, api_1.targetStringFromTarget)(target)}}` : info.builderName,
-        argument: { type: 'object' },
-        input: inputSchema,
-        output: outputSchema,
+        argument: true,
+        input: true,
+        output: true,
         info,
     };
     function handler(argument, context) {
@@ -179,8 +177,6 @@ function _getTargetOptionsFactory(host) {
         });
     }, {
         name: '..getTargetOptions',
-        output: { type: 'object' },
-        argument: inputSchema.properties.target,
     });
 }
 function _getProjectMetadataFactory(host) {
@@ -193,10 +189,6 @@ function _getProjectMetadataFactory(host) {
         });
     }, {
         name: '..getProjectMetadata',
-        output: { type: 'object' },
-        argument: {
-            oneOf: [{ type: 'string' }, inputSchema.properties.target],
-        },
     });
 }
 function _getBuilderNameForTargetFactory(host) {
@@ -208,8 +200,6 @@ function _getBuilderNameForTargetFactory(host) {
         return builderName;
     }, {
         name: '..getBuilderNameForTarget',
-        output: { type: 'string' },
-        argument: inputSchema.properties.target,
     });
 }
 function _validateOptionsFactory(host, registry) {
@@ -227,11 +217,6 @@ function _validateOptionsFactory(host, registry) {
         return data;
     }, {
         name: '..validateOptions',
-        output: { type: 'object' },
-        argument: {
-            type: 'array',
-            items: [{ type: 'string' }, { type: 'object' }],
-        },
     });
 }
 class Architect {
