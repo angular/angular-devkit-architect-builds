@@ -143,3 +143,4 @@ function createLoggerJob(job, logger) {
     };
     return Object.assign(handler, job);
 }
+//# sourceMappingURL=create-job-handler.js.map

@@ -289,3 +289,4 @@ async function getBuilder(builderPath) {
     }
     return 'default' in builder ? builder.default : builder;
 }
+//# sourceMappingURL=node-modules-architect-host.js.map

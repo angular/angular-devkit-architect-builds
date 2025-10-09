@@ -47,3 +47,4 @@ function createDispatcher(options = {}) {
         // TODO: Remove return-only generic from createDispatcher() API.
     });
 }
+//# sourceMappingURL=dispatcher.js.map
