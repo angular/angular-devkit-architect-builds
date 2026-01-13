@@ -49,19 +49,20 @@ const node_util_1 = require("node:util");
 const index_1 = require("../index");
 const index_2 = require("../node/index");
 function findUp(names, from) {
-    if (!Array.isArray(names)) {
-        names = [names];
-    }
-    const root = path.parse(from).root;
-    let currentDir = from;
-    while (currentDir && currentDir !== root) {
-        for (const name of names) {
+    const filenames = Array.isArray(names) ? names : [names];
+    let currentDir = path.resolve(from);
+    while (true) {
+        for (const name of filenames) {
             const p = path.join(currentDir, name);
             if ((0, node_fs_1.existsSync)(p)) {
                 return p;
             }
         }
-        currentDir = path.dirname(currentDir);
+        const parentDir = path.dirname(currentDir);
+        if (parentDir === currentDir) {
+            break;
+        }
+        currentDir = parentDir;
     }
     return null;
 }
