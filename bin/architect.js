@@ -173,9 +173,18 @@ function parseOptions(args) {
                 value = true; // Treat as boolean if no value follows
             }
         }
-        // Type inference for numbers
-        if (typeof value === 'string' && !isNaN(Number(value))) {
-            value = Number(value);
+        if (typeof value === 'string') {
+            if (!isNaN(Number(value))) {
+                // Type inference for numbers
+                value = Number(value);
+            }
+            else if (value === 'true') {
+                // Type inference for booleans
+                value = true;
+            }
+            else if (value === 'false') {
+                value = false;
+            }
         }
         const camelName = core_1.strings.camelize(name);
         if (Object.prototype.hasOwnProperty.call(builderOptions, camelName)) {
