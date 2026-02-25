@@ -19,7 +19,7 @@ function createDispatcher(options = {}) {
     const conditionalDelegateList = [];
     const job = Object.assign((argument, context) => {
         const maybeDelegate = conditionalDelegateList.find(([predicate]) => predicate(argument));
-        let delegate = null;
+        let delegate;
         if (maybeDelegate) {
             delegate = context.scheduler.schedule(maybeDelegate[1], argument);
         }
