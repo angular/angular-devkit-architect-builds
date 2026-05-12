@@ -210,12 +210,32 @@ async function main(args) {
     /** Parse the command line. */
     const { positionals, cliOptions, builderOptions } = parseOptions(args);
     /** Create the DevKit Logger used through the CLI. */
-    const logger = (0, node_1.createConsoleLogger)(!!cliOptions['verbose'], process.stdout, process.stderr, {
+    const logger = new core_1.logging.IndentLogger('architect');
+    const colorLevels = {
         info: (s) => s,
         debug: (s) => s,
-        warn: (s) => (0, node_util_1.styleText)(['yellow', 'bold'], s),
-        error: (s) => (0, node_util_1.styleText)(['red', 'bold'], s),
-        fatal: (s) => (0, node_util_1.styleText)(['red', 'bold'], s),
+        warn: (s) => (0, node_util_1.styleText)(['yellow', 'bold'], s, { stream: process.stderr }),
+        error: (s) => (0, node_util_1.styleText)(['red', 'bold'], s, { stream: process.stderr }),
+        fatal: (s) => (0, node_util_1.styleText)(['red', 'bold'], s, { stream: process.stderr }),
+    };
+    logger.subscribe((entry) => {
+        if (entry.level === 'debug' && !cliOptions['verbose']) {
+            return;
+        }
+        const color = colorLevels[entry.level];
+        const message = color ? color(entry.message) : entry.message;
+        switch (entry.level) {
+            case 'warn':
+            case 'fatal':
+            case 'error':
+                // eslint-disable-next-line no-console
+                console.error(message);
+                break;
+            default:
+                // eslint-disable-next-line no-console
+                console.log(message);
+                break;
+        }
     });
     // Check the target.
     const targetStr = positionals[0];
