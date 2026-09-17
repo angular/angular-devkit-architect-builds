@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/architect",
-  "version": "0.2203.0-next.0+sha-93c118e",
+  "version": "0.2203.0-next.0+sha-2b59d84",
   "description": "Angular Build Facade",
   "experimental": true,
   "bin": {
@@ -8,8 +8,25 @@
   },
   "main": "src/index.js",
   "typings": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./node": {
+      "types": "./node/index.d.ts",
+      "default": "./node/index.js"
+    },
+    "./testing": {
+      "types": "./testing/index.d.ts",
+      "default": "./testing/index.js"
+    },
+    "./builders.json": "./builders/builders.json",
+    "./builders/builders.json": "./builders/builders.json",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#93c118e",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#2b59d84",
     "rxjs": "7.8.2"
   },
   "builders": "./builders/builders.json",
