@@ -1,6 +1,6 @@
 {
   "name": "@angular-devkit/architect",
-  "version": "0.2202.4+sha-d04224d",
+  "version": "0.2202.4+sha-9cba0da",
   "description": "Angular Build Facade",
   "experimental": true,
   "bin": {
@@ -9,7 +9,7 @@
   "main": "src/index.js",
   "typings": "src/index.d.ts",
   "dependencies": {
-    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#d04224d",
+    "@angular-devkit/core": "github:angular/angular-devkit-core-builds#9cba0da",
     "rxjs": "7.8.2"
   },
   "builders": "./builders/builders.json",
